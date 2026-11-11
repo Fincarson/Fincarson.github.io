@@ -43,18 +43,19 @@
   --sky-mid: #0a7fcb;
   --sky-ink: #ffffff;
   /* The sky's fade, top to bottom, from the zenith to the page colour.
-     global.css places the stops; the last three ease the fade into the page. */
+     global.css places the stops. From --sky-6 on, the colour only lightens
+     toward the page colour, so it stays blue, and it eases in with no slope. */
   --sky-1: #1f99e6;
   --sky-2: #2e9fe4;
   --sky-3: #51afe5;
   --sky-4: #73bfe5;
   --sky-5: #93cee7;
-  --sky-6: #b1dbed;
-  --sky-7: #c6e4ec;
-  --sky-8: #d8ebeb;
-  --sky-9: #e0efef;
-  --sky-10: #edf5f6;
-  --sky-11: #f8fbfb;
+  --sky-6: #aad8ec;
+  --sky-7: #c1e3f1;
+  --sky-8: #d8edf6;
+  --sky-9: #ebf5fa;
+  --sky-10: #f8fbfd;
+  --sky-11: #fcfcfe;
   /* The footer: page colour at the top, easing into the footer colour. */
   --footer-bg: #002341;
   --footer-ink: #ffffff;
@@ -159,12 +160,12 @@
   --sky-3: #042037;
   --sky-4: #061e33;
   --sky-5: #081c2e;
-  --sky-6: #0a1b2a;
-  --sky-7: #0c1a27;
+  --sky-6: #0a1b2b;
+  --sky-7: #0b1a27;
   --sky-8: #0d1924;
-  --sky-9: #0d1823;
-  --sky-10: #0e1821;
-  --sky-11: #0f1720;
+  --sky-9: #0e1822;
+  --sky-10: #0f1720;
+  --sky-11: #0f171f;
   --footer-bg: #0073d6;
   --footer-stops:
     #0f171f 0%, #0f1923 8.33%, #0e1e2c 16.67%, #0d253b 25%, #0b2f4e 33.33%, #0a3a64 41.67%, #08457a 50%, #065091 58.33%,

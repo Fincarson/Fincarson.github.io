@@ -77,7 +77,7 @@ function stars(seed: number, count: number) {
     <meta property="og:image" content={shareImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${site.name}. ${site.headline}. ${site.motto}`} />
+    <meta property="og:image:alt" content={site.name} />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={titleFont} as="font" type="font/woff2" crossorigin />
@@ -176,7 +176,7 @@ function stars(seed: number, count: number) {
     </dialog>
     <main id="main" tabindex="-1">
       <div class:list={['sky', { 'sky--hero': !hero }]}>
-        <!-- Sky art, drawn for this site: clouds and doves by day, stars and one shooting star by night.
+        <!-- Sky art, drawn for this site: clouds and doves by day, stars and a shooting star by night.
              Decorative, and kept clear of the text (global.css). -->
         <div class="sky-art" aria-hidden="true">
           <svg class="art-defs" width="0" height="0" focusable="false">
@@ -209,8 +209,8 @@ function stars(seed: number, count: number) {
               {stars(7, 26).map((star) => <circle {...star} />)}
               <g class="wide">{stars(23, 22).map((star) => <circle {...star} />)}</g>
             </svg>
-            <svg class="night shooting" viewBox="0 0 120 2" preserveAspectRatio="none">
-              <path d="M0 1L120 0v2z"></path>
+            <svg class="night shooting" viewBox="0 0 120 3" preserveAspectRatio="none">
+              <path d="M0 1.5L120 0v3z"></path>
             </svg>
           </div>
           <svg class="night stars stars-top">
@@ -313,23 +313,24 @@ function stars(seed: number, count: number) {
         });
         sidebar.addEventListener('close', () => opener.setAttribute('aria-expanded', false));
 
-        // Shooting star: every 8 to 15 seconds, in the night sky only, at a new place
-        // in the fade below the text. Never started when reduced motion is asked for.
+        // Shooting star: the first one 2 to 4 seconds after load, then one every 6 to 12
+        // seconds, in the night sky only, at a new place in the fade below the text.
+        // Never started when reduced motion is asked for: the streak then stays still.
         const star = document.querySelector('.shooting');
         const still = matchMedia('(prefers-reduced-motion: reduce)');
-        const wait = () => setTimeout(shoot, 8000 + Math.random() * 7000);
+        const wait = (min, span) => setTimeout(shoot, min + Math.random() * span);
         const shoot = () => {
           if (still.matches) return;
           if (isDark() && !document.hidden) {
             star.style.setProperty('--x', `${5 + Math.random() * 50}%`);
-            star.style.setProperty('--y', `${4 + Math.random() * 36}%`);
+            star.style.setProperty('--y', `${8 + Math.random() * 22}%`);
             star.classList.remove('go');
             star.getBoundingClientRect();
             star.classList.add('go');
           }
-          wait();
+          wait(6000, 6000);
         };
-        if (!still.matches) wait();
+        if (!still.matches) wait(2000, 2000);
       })();
     </script>
   </body>

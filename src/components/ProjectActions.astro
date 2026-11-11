@@ -1,5 +1,6 @@
 ---
-// The buttons under a project: its page (optional), GitHub, and the video where one exists.
+// The buttons under a project. In a card: the video where one exists, GitHub, then
+// its page, always last. On the project's own page: GitHub, then the video.
 // Each aria-label starts with the visible text and names the project.
 import type { CollectionEntry } from 'astro:content';
 import Button from './Button.astro';
@@ -16,10 +17,10 @@ const { data } = project;
 
 <ul class="actions">
   {
-    details && (
+    details && data.video && (
       <li>
-        <Button href={`/projects/${data.slug}/`} label={`See details: ${data.title}`}>
-          See details
+        <Button href={data.video.url} icon="youtube" label={`${data.video.label}: ${data.title} (YouTube)`}>
+          {data.video.label}
         </Button>
       </li>
     )
@@ -28,10 +29,19 @@ const { data } = project;
     <Button href={data.repo} icon="github" label={`View on GitHub: ${data.title}`}>View on GitHub</Button>
   </li>
   {
-    data.video && (
+    !details && data.video && (
       <li>
         <Button href={data.video.url} icon="youtube" label={`${data.video.label}: ${data.title} (YouTube)`}>
           {data.video.label}
+        </Button>
+      </li>
+    )
+  }
+  {
+    details && (
+      <li>
+        <Button href={`/projects/${data.slug}/`} label={`See details: ${data.title}`}>
+          See details
         </Button>
       </li>
     )

@@ -480,31 +480,35 @@ main:focus {
   outline-offset: -3px;
 }
 
-/* The sky: the top of every page. One straight vertical gradient. The text
-   sits on the solid top colour; the fade fills the last --sky-fade-h of the
-   box and runs through the theme's eleven stops (tokens.css) to the page
-   colour. It changes from its first pixel and never stops, so no band shows. */
+/* The sky: the top of every page. The text sits on the solid top colour; the
+   fade fills the last --sky-fade-h of the box and runs through the theme's
+   eleven stops (tokens.css) to exactly the page colour, so the hero's last row
+   is the page. The fade is drawn as a very wide, shallow ellipse (two and a half
+   windows wide, centred three fade heights above the hero's bottom edge), so it
+   reaches a little further down in the middle than at the sides. The first
+   stop is where the ellipse meets the bottom of the text at the window's edge:
+   the text is on the solid colour at every width. */
 .sky {
   --sky-fade-h: var(--hero-fade);
   --sky-pad: var(--space-48);
   --f: var(--sky-fade-h);
   position: relative;
   color: var(--sky-ink);
-  background: linear-gradient(
-    to bottom,
-    var(--sky-zenith) calc(100% - var(--f)),
-    var(--sky-1) calc(100% - var(--f) * 0.9375),
-    var(--sky-2) calc(100% - var(--f) * 0.875),
-    var(--sky-3) calc(100% - var(--f) * 0.75),
-    var(--sky-4) calc(100% - var(--f) * 0.625),
-    var(--sky-5) calc(100% - var(--f) * 0.5),
-    var(--sky-6) calc(100% - var(--f) * 0.375),
-    var(--sky-7) calc(100% - var(--f) * 0.25),
-    var(--sky-8) calc(100% - var(--f) * 0.125),
-    var(--sky-9) calc(100% - var(--f) * 0.09375),
-    var(--sky-10) calc(100% - var(--f) * 0.0625),
-    var(--sky-11) calc(100% - var(--f) * 0.03125),
-    var(--bg) 100%
+  background: radial-gradient(
+    ellipse 250vw calc(var(--f) * 3) at 50% calc(100% - var(--f) * 3),
+    var(--sky-zenith) 69.6%,
+    var(--sky-1) 71.48%,
+    var(--sky-2) 73.35%,
+    var(--sky-3) 77.1%,
+    var(--sky-4) 80.85%,
+    var(--sky-5) 84.6%,
+    var(--sky-6) 87.1%,
+    var(--sky-7) 89.6%,
+    var(--sky-8) 92.1%,
+    var(--sky-9) 94.6%,
+    var(--sky-10) 97.1%,
+    var(--sky-11) 98.35%,
+    var(--bg) 99.6%
   );
 }
 /* The room the fade takes below the text. */
@@ -556,11 +560,10 @@ main:focus {
 }
 /* Overview: the name, the only giant title on the site, over a longer fade. */
 .sky--hero {
-  --sky-fade-h: clamp(15rem, 31vw, 28rem);
+  --sky-fade-h: calc(clamp(15rem, 31vw, 28rem) - var(--space-8));
   --sky-pad: var(--space-64);
 }
 .hero {
-  padding-bottom: var(--space-16);
   text-align: center;
 }
 .hero .page-title {
@@ -577,7 +580,7 @@ main:focus {
   display: block;
 }
 .hero .page-sub {
-  margin-top: var(--space-24);
+  margin-top: var(--space-48);
   font-size: var(--text-xl);
 }
 /* Regular weight on the sky, so 24 px. */
@@ -699,15 +702,19 @@ main:focus {
 .stars-side {
   display: none !important;
 }
-/* The shooting star: a thin tapered streak that crosses part of the fade, below
-   the text, in the night sky only. The script gives it a new place (--x, --y)
-   and restarts the animation every 8 to 15 seconds. Transform and opacity only. */
+/* The shooting star: a thin tapered streak that falls across part of the fade,
+   below the text, in the night sky only. The script gives it a new place
+   (--x, --y) and restarts the animation every 6 to 12 seconds. It turns about
+   its tail, so no part of it ever rises above its starting point. Transform
+   and opacity only. */
 .sky-art .shooting {
-  left: var(--x, 20%);
-  top: var(--y, 10%);
+  left: var(--x, 58%);
+  top: var(--y, 14%);
   width: clamp(4.5rem, 12vw, 8rem);
-  height: 2px;
+  height: 3px;
   opacity: 0;
+  transform-origin: 0 0;
+  transform: rotate(16deg);
 }
 .shooting.go {
   animation: shoot 1100ms linear;
@@ -719,16 +726,18 @@ main:focus {
   }
   15%,
   60% {
-    opacity: 0.9;
+    opacity: 1;
   }
   100% {
     opacity: 0;
     transform: rotate(16deg) translateX(clamp(8rem, 28vw, 20rem));
   }
 }
+/* Reduced motion: one faint streak that stays where it is. */
 @media (prefers-reduced-motion: reduce) {
   .sky-art .shooting {
-    display: none !important;
+    opacity: 0.4;
+    animation: none;
   }
 }
 
@@ -801,6 +810,10 @@ h2 + .cards {
 }
 .card .actions li {
   flex: 1 1 11rem;
+}
+/* "See details" closes the card on a row of its own. */
+.card .actions li:last-child {
+  flex-basis: 100%;
 }
 .card .btn {
   flex: 1;

@@ -5,19 +5,17 @@
 <title>Share image source</title>
 <style>
 @font-face{font-family:"BSD";font-weight:900;src:url("../src/assets/fonts/big-shoulders-display-900.woff2") format("woff2")}
-@font-face{font-family:"AHN";font-weight:400;src:url("../src/assets/fonts/atkinson-hyperlegible-next-400.woff2") format("woff2")}
-@font-face{font-family:"AHN";font-weight:700;src:url("../src/assets/fonts/atkinson-hyperlegible-next-700.woff2") format("woff2")}
 html,body{margin:0}
-/* The light sky of the site: solid behind the text, then the same fade (the
+/* The light sky of the site: solid behind the name, then the same fade (the
    stops of tokens.css) over the last 240 px. */
-body{position:relative;width:1200px;height:630px;box-sizing:border-box;padding:72px 48px 0;overflow:hidden;text-align:center;
+body{position:relative;width:1200px;height:630px;overflow:hidden;
   background:linear-gradient(to bottom,#0e91e5 390px,#1f99e6 405px,#2e9fe4 420px,#51afe5 450px,#73bfe5 480px,#93cee7 510px,
-    #b1dbed 540px,#c6e4ec 570px,#d8ebeb 600px,#e0efef 607.5px,#edf5f6 615px,#f8fbfb 622.5px,#fdfdfe 630px);
-  color:#fff;font:400 30px/1.4 "AHN",sans-serif}
-h1{margin:0;font:900 132px/0.88 "BSD",sans-serif;letter-spacing:.005em;text-transform:uppercase;white-space:nowrap}
-.who{margin:28px 0 0;font-weight:700;font-size:40px}
-p{margin:0}
-.site{margin-top:24px;font-size:26px}
+    #aad8ec 530px,#c1e3f1 550px,#d8edf6 570px,#ebf5fa 590px,#f8fbfd 610px,#fcfcfe 620px,#fdfdfe 630px);
+  color:#fff}
+/* The name, alone, with the middle of its letters on the middle of the image.
+   The 3 px are the measured offset of the letters inside their line box. */
+h1{position:absolute;left:50%;top:50%;margin:0;transform:translate(calc(-50% + 3px),calc(-50% + 3px));
+  font:900 132px/0.72 "BSD",sans-serif;letter-spacing:.005em;text-transform:uppercase;white-space:nowrap}
 /* The site's day art, in the fade below the text: a cloud at each side and a few doves. */
 .art{position:absolute;inset:390px 0 0;-webkit-mask-image:linear-gradient(#000 40%,transparent 92%);mask-image:linear-gradient(#000 40%,transparent 92%)}
 .art svg{position:absolute;fill:#fff}
@@ -32,9 +30,6 @@ p{margin:0}
 .d4{right:33%;top:8%;width:20px;transform:rotate(-10deg)}
 </style>
 <h1>Vincent Jefferson</h1>
-<p class="who">CS student at @NTHU</p>
-<p>Fortune favors the bold.</p>
-<p class="site">fincarson.github.io</p>
 <div class="art">
   <svg width="0" height="0">
     <symbol id="dove-a" viewBox="0 0 64 48"><path d="M61 24.5l-5.6-2.3c-1.3-3.2-5.2-4.4-8.1-2.6-1.3.8-2.6 1.3-4 1.4C45 14 48.5 6.5 54 1c-8.5 2.5-15.5 8.5-19.5 16.5C31 10.5 25 4.5 16 2c3.5 6.5 6 13.5 9.5 19.5C19.5 22 12 21 3 17.5l5 7-6 7c8.5 1 16.5.8 24-1 8.5 4.5 19 3.5 25.5-2.5 1.6-1.4 3.2-2.3 5-2.7z"/></symbol>
