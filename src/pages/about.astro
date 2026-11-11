@@ -1,0 +1,51 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Contact from '../components/Contact.astro';
+import { site } from '../site.config';
+import portrait from '../assets/profile-picture.png';
+---
+
+<Base
+  title="About"
+  description="About Vincent Jefferson: computer science student at National Tsing Hua University (NTHU), 2024 to 2028."
+>
+  <h1 class="page-title" slot="sky">About</h1>
+
+  <div class="page wrap about">
+    <div class="column">
+      <p class="lead">{site.about}</p>
+
+    <section class="section" aria-labelledby="education">
+      <h2 id="education">Education</h2>
+      <ul class="edu">
+        <li>
+          <strong>Bachelor in Computer Science</strong>
+          <span>National Tsing Hua University (NTHU)</span>
+          <span>2024 to 2028</span>
+        </li>
+        <li>
+          <strong>High school</strong>
+          <span>SMAK 2 BPK PENABUR Bandung</span>
+          <span>2021 to 2024</span>
+        </li>
+      </ul>
+    </section>
+
+      <Contact />
+    </div>
+
+    <div class="portrait">
+      <Picture
+        src={portrait}
+        alt="Vincent Jefferson's profile picture."
+        formats={['avif']}
+        fallbackFormat="webp"
+        widths={[240, 480]}
+        sizes="(min-width: 56em) 20rem, 14rem"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+  </div>
+</Base>

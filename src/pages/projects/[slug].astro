@@ -1,0 +1,81 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import ProjectActions from '../../components/ProjectActions.astro';
+import { getProjects } from '../../projects';
+
+export async function getStaticPaths() {
+  return (await getProjects()).map((project) => ({
+    params: { slug: project.data.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const lead = data.media[0]!;
+
+// Lists of facts. A section with no facts is left out.
+const lists = [
+  { id: 'how-to', heading: data.playHeading, items: data.play, steps: data.playSteps },
+  { id: 'built', heading: data.solo ? 'How I built it' : 'How we built it', items: data.built, steps: false },
+  { id: 'team', heading: 'The team', items: data.members, steps: false },
+].filter((s) => s.items.length > 0);
+---
+
+<Base
+  title={data.title}
+  description={data.summary}
+  heavyTitle={false}
+  skyClass="sky--bare"
+  mainStyle={`--lead-ratio: ${(lead.src.width / lead.src.height).toFixed(4)}`}
+>
+  <article class="page project wrap">
+    <div class:list={['project-lead', { pixel: lead.pixel }]}>
+      <Picture
+        src={lead.src}
+        alt={lead.alt}
+        formats={['avif']}
+        fallbackFormat="webp"
+        widths={[480, 800, 1200].filter((w) => w <= lead.src.width)}
+        sizes="(min-width: 40rem) 36rem, 100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+
+    <header class="project-head">
+      <h1 set:html={data.title.replaceAll('_', '_<wbr>')} />
+      <p class="lead">{data.summary}</p>
+      <ProjectActions project={project} writeUp={false} />
+    </header>
+
+    <div class="project-body">
+      {
+        data.about.length > 0 && (
+          <>
+            <h2 id="description">Description</h2>
+            {data.about.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </>
+        )
+      }
+      {
+        lists.map((s) => {
+          const List = s.steps ? 'ol' : 'ul';
+          return (
+            <>
+              <h2 id={s.id}>{s.heading}</h2>
+              <List class="points">
+                {s.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </List>
+            </>
+          );
+        })
+      }
+    </div>
+  </article>
+</Base>

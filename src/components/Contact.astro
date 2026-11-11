@@ -1,0 +1,14 @@
+---
+// The Contact section, identical on Overview and About.
+import Button from './Button.astro';
+import { profileLinks } from '../site.config';
+---
+
+<section class="section" aria-labelledby="contact">
+  <h2 id="contact">Contact</h2>
+  <p>Feel free to reach out to me.</p>
+  <ul class="actions">
+    <li><Button href={profileLinks.linkedin.href} icon="linkedin">My LinkedIn</Button></li>
+    <li><Button href={profileLinks.instagram.href} icon="instagram">My Instagram</Button></li>
+  </ul>
+</section>

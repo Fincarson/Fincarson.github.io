@@ -1,0 +1,264 @@
+---
+import { site, sections, profileLinks } from '../site.config';
+import '../styles/global.css';
+import bodyFont from '../assets/fonts/atkinson-hyperlegible-next-400.woff2?url';
+import displayFont from '../assets/fonts/big-shoulders-display-700.woff2?url';
+import nameFont from '../assets/fonts/big-shoulders-display-900.woff2?url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** False where the page title is set in display 700 (project pages, 404), so the 900 file is not preloaded. */
+  heavyTitle?: boolean;
+  /** The 404 page: it has no address of its own, so no canonical link, and it stays out of search. */
+  notFound?: boolean;
+  /** A modifier for the sky: 'sky--hero' on Overview, 'sky--bare' on project pages. */
+  skyClass?: string;
+  /** Inline custom properties for main (the project picture's aspect ratio). */
+  mainStyle?: string;
+}
+
+const { title, description = site.description, heavyTitle = true, notFound = false, skyClass, mainStyle } = Astro.props;
+const pageTitle = title ? `${title} | ${site.name}` : `${site.name}, ${site.headline}`;
+const nav = sections.filter((s) => s.enabled);
+const path = Astro.url.pathname;
+const isCurrent = (p: string) => (p === '/' ? path === '/' : path.startsWith(p));
+const canonical = new URL(path, Astro.site);
+const shareImage = new URL('/og.png', Astro.site);
+
+// Stars for the night sky: plain dots of varied size and brightness.
+// A seeded generator places them, so every build draws the same sky.
+function stars(seed: number, count: number) {
+  let s = seed;
+  const rnd = () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
+  return Array.from({ length: count }, () => ({
+    cx: `${(rnd() * 100).toFixed(1)}%`,
+    cy: `${(rnd() * 100).toFixed(1)}%`,
+    r: (0.6 + rnd() ** 2 * 1.2).toFixed(1),
+    opacity: (0.35 + rnd() * 0.6).toFixed(2),
+  }));
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Applies the saved theme before first paint. The choice never leaves the browser. -->
+    <script is:inline>
+      try {
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';
+      } catch {}
+    </script>
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {notFound ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/icon-512.png" type="image/png" sizes="512x512" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    {!notFound && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name}. ${site.headline}. ${site.motto}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={heavyTitle ? nameFont : displayFont} as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to main content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <nav aria-label="Main">
+          <ul>
+            {
+              nav.map((s) => (
+                <li>
+                  <a href={s.path} aria-current={isCurrent(s.path) ? 'page' : undefined}>
+                    {s.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+        <div class="header-tools">
+          <!-- Both controls are hidden until the script below runs: without JavaScript they could do nothing. -->
+          <div class="lang" hidden>
+            <button
+              class="tool lang-button"
+              type="button"
+              aria-expanded="false"
+              aria-controls="lang-menu"
+              aria-label="Language: English (EN)"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="9.5"></circle>
+                <path d="M2.5 12h19M12 2.5c3 3.2 3 15.8 0 19M12 2.5c-3 3.2-3 15.8 0 19"></path>
+              </svg>
+              <span aria-hidden="true">EN</span>
+            </button>
+            <!-- One entry per language; each links to this page in that language. -->
+            <ul class="lang-menu" id="lang-menu" hidden>
+              <li>
+                <a href={path} lang="en" hreflang="en" aria-current="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true" focusable="false">
+                    <path d="M4 12.5l5 5L20 6.5"></path>
+                  </svg>
+                  English
+                </a>
+              </li>
+            </ul>
+          </div>
+          <button class="tool theme-toggle" type="button" aria-pressed="false" aria-label="Dark mode" hidden>
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="4.5" fill="currentColor"></circle>
+              <path
+                d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"></path>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main id="main" tabindex="-1" style={mainStyle}>
+      <div class:list={['sky', skyClass]}>
+        <!-- Sky art, drawn for this site: clouds and doves by day, stars by night. Static, decorative,
+             and kept clear of the text (global.css). -->
+        <div class="sky-art" aria-hidden="true">
+          <svg class="art-defs" width="0" height="0" focusable="false">
+            <symbol id="dove-a" viewBox="0 0 64 48">
+              <path d="M61 24.5l-5.6-2.3c-1.3-3.2-5.2-4.4-8.1-2.6-1.3.8-2.6 1.3-4 1.4C45 14 48.5 6.5 54 1c-8.5 2.5-15.5 8.5-19.5 16.5C31 10.5 25 4.5 16 2c3.5 6.5 6 13.5 9.5 19.5C19.5 22 12 21 3 17.5l5 7-6 7c8.5 1 16.5.8 24-1 8.5 4.5 19 3.5 25.5-2.5 1.6-1.4 3.2-2.3 5-2.7z"></path>
+            </symbol>
+            <symbol id="dove-b" viewBox="0 0 64 48">
+              <path d="M61 20.5l-5.6-2.3c-1.3-3.2-5.2-4.4-8.1-2.6-1.6 1-3.3 1.5-5.1 1.5C36.5 12.5 29 10 20 10.5c-6 .4-11.5 1.8-16.5 4.2 5.5.3 10.5 1.5 15 3.5-5 1.3-10.5 1.3-16.5-.2l5.5 6-5 7c8 .5 15.5-.2 22.5-2.2C28 37 33 43.5 40 46.5c-.5-6.5-.5-12.5 1.5-18 4-.8 7.5-2.5 10-4.8 1.6-1.4 3.2-2.3 5-2.7z"></path>
+            </symbol>
+            <symbol id="cloud-a" viewBox="0 0 240 90">
+              <path d="M40 88a22 22 0 0 1-4-43.6A34 34 0 0 1 96 22a40 40 0 0 1 72 10 28 28 0 0 1 36 25.5A15.5 15.5 0 0 1 202 88z"></path>
+            </symbol>
+            <symbol id="cloud-b" viewBox="0 0 200 80">
+              <path d="M30 78a18 18 0 0 1-1-36 30 30 0 0 1 54-18 36 36 0 0 1 66 14 20 20 0 0 1 0 40z"></path>
+            </symbol>
+          </svg>
+          <div class="art-fade">
+            <div class="day">
+              <svg class="cloud c-l1" viewBox="0 0 240 90"><use href="#cloud-a"></use></svg>
+              <svg class="cloud c-l2" viewBox="0 0 200 80"><use href="#cloud-b"></use></svg>
+              <svg class="cloud c-r1" viewBox="0 0 200 80"><use href="#cloud-b"></use></svg>
+              <svg class="cloud c-r2" viewBox="0 0 240 90"><use href="#cloud-a"></use></svg>
+              <svg class="dove d1" viewBox="0 0 64 48"><use href="#dove-a"></use></svg>
+              <svg class="dove d2" viewBox="0 0 64 48"><use href="#dove-b"></use></svg>
+              <svg class="dove d3" viewBox="0 0 64 48"><use href="#dove-b"></use></svg>
+              <svg class="dove d4" viewBox="0 0 64 48"><use href="#dove-a"></use></svg>
+              <svg class="dove d5" viewBox="0 0 64 48"><use href="#dove-a"></use></svg>
+            </div>
+            <svg class="night stars">
+              {stars(7, 26).map((star) => <circle {...star} />)}
+              <g class="wide">{stars(23, 22).map((star) => <circle {...star} />)}</g>
+            </svg>
+          </div>
+          <svg class="night stars stars-top">
+            {stars(41, 9).map((star) => <circle {...star} />)}
+            <g class="wide">{stars(59, 9).map((star) => <circle {...star} />)}</g>
+          </svg>
+          <svg class="night stars stars-side stars-l">{stars(77, 8).map((star) => <circle {...star} />)}</svg>
+          <svg class="night stars stars-side stars-r">{stars(91, 8).map((star) => <circle {...star} />)}</svg>
+        </div>
+        {
+          Astro.slots.has('sky') && (
+            <div class="wrap">
+              <slot name="sky" />
+            </div>
+          )
+        }
+      </div>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-cols">
+          <nav aria-labelledby="footer-pages">
+            <h2 id="footer-pages">Pages</h2>
+            <ul>
+              {
+                nav.map((s) => (
+                  <li>
+                    <a href={s.path}>{s.label}</a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+          <nav aria-labelledby="footer-socials">
+            <h2 id="footer-socials">Socials</h2>
+            <ul>
+              {
+                Object.values(profileLinks).map((l) => (
+                  <li>
+                    <a href={l.href}>{l.label}</a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        </div>
+        <p>© {new Date().getFullYear()} {site.name}</p>
+        <p>This site uses no cookies or tracking.</p>
+      </div>
+    </footer>
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+
+        // Theme toggle: pressed means dark. The choice stays in this browser.
+        const toggle = document.querySelector('.theme-toggle');
+        const isDark = () => root.dataset.theme === 'dark';
+        toggle.hidden = false;
+        toggle.setAttribute('aria-pressed', isDark());
+        toggle.addEventListener('click', () => {
+          const dark = !isDark();
+          if (dark) root.dataset.theme = 'dark';
+          else delete root.dataset.theme;
+          try {
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+          } catch {}
+          toggle.setAttribute('aria-pressed', dark);
+        });
+
+        // Language menu: the button opens it; Escape, a click elsewhere or focus leaving closes it.
+        const lang = document.querySelector('.lang');
+        const button = lang.querySelector('button');
+        const menu = lang.querySelector('ul');
+        const setOpen = (open) => {
+          button.setAttribute('aria-expanded', open);
+          menu.hidden = !open;
+        };
+        lang.hidden = false;
+        button.addEventListener('click', () => setOpen(menu.hidden));
+        lang.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !menu.hidden) {
+            setOpen(false);
+            button.focus();
+          }
+        });
+        lang.addEventListener('focusout', (e) => {
+          if (!lang.contains(e.relatedTarget)) setOpen(false);
+        });
+        document.addEventListener('click', (e) => {
+          if (!lang.contains(e.target)) setOpen(false);
+        });
+      })();
+    </script>
+  </body>
+</html>

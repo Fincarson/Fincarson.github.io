@@ -1,0 +1,941 @@
+@import './tokens.css';
+
+/* Self-hosted fonts (SIL Open Font License, texts in src/assets/fonts).
+   Latin subsets. The "Fallback" faces are Arial resized to the web fonts'
+   metrics, so text holds its place while the real files load. */
+@font-face {
+  font-family: 'Big Shoulders Display';
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/big-shoulders-display-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Big Shoulders Display';
+  font-weight: 900;
+  font-display: swap;
+  src: url('../assets/fonts/big-shoulders-display-900.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next';
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/atkinson-hyperlegible-next-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next';
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/atkinson-hyperlegible-next-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Big Shoulders Display Fallback';
+  font-weight: 900;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Roboto Bold');
+  size-adjust: 69.44%;
+  ascent-override: 141.7%;
+  descent-override: 30.67%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Big Shoulders Display Fallback';
+  font-weight: 700;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Roboto Bold');
+  size-adjust: 71.41%;
+  ascent-override: 137.79%;
+  descent-override: 29.83%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next Fallback';
+  font-weight: 400;
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('Roboto');
+  size-adjust: 98.59%;
+  ascent-override: 99.81%;
+  descent-override: 32.05%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next Fallback';
+  font-weight: 700;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Roboto Bold');
+  size-adjust: 98.49%;
+  ascent-override: 99.91%;
+  descent-override: 32.08%;
+  line-gap-override: 0%;
+}
+
+
+/* Base elements. Corners are square everywhere: no border-radius is ever set. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Jump targets and focused controls stop below the sticky header. */
+  scroll-padding-top: calc(var(--header-h) + var(--space-16));
+}
+
+/* A column as tall as the window, so the footer sits at the bottom on short pages. */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--text-base) / var(--leading-body) var(--font-body);
+}
+main {
+  flex: 1;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 var(--space-12);
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--text-4xl);
+}
+h2 {
+  font-size: var(--text-3xl);
+}
+h3 {
+  font-size: var(--text-2xl);
+}
+
+p,
+ul,
+ol,
+dl {
+  margin: 0 0 var(--space-16);
+  max-width: var(--measure);
+}
+p {
+  text-wrap: pretty;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+  transition: color var(--duration) var(--ease);
+}
+a:hover {
+  color: var(--link-hover);
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+/* On the sky and the footer the ring takes the text colour. */
+.site-header :focus-visible,
+.sky :focus-visible,
+.site-footer :focus-visible {
+  outline-color: var(--sky-ink);
+}
+
+::selection {
+  background: var(--brand);
+  color: var(--selection-ink);
+}
+
+/* Shared pieces */
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.skip {
+  position: absolute;
+  z-index: 5;
+  left: var(--gutter);
+  top: var(--space-8);
+  padding: var(--space-8) var(--space-16);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  background: var(--bg);
+  transform: translateY(-200%);
+}
+.skip:focus {
+  transform: none;
+}
+
+/* The skip link lands here; main itself is not a control. */
+main:focus {
+  outline: none;
+}
+
+/* Buttons. Internal: deep blue. External: the platform's own colour and its
+   white mark. Each brand sets --b (fill), --bh (hover), --bb (edge). */
+.btn {
+  --b: var(--button);
+  --bh: var(--button-hover);
+  --bb: var(--b);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  min-height: var(--tap);
+  padding: var(--space-8) var(--space-24);
+  border: 1px solid var(--bb);
+  background: var(--b);
+  color: var(--button-ink);
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease);
+}
+.btn:hover {
+  background-color: var(--bh);
+  color: var(--button-ink);
+}
+.btn:not(.btn--github):hover {
+  border-color: var(--bh);
+}
+.btn--github {
+  --b: var(--github);
+  --bh: var(--github-hover);
+  --bb: var(--github-border);
+}
+.btn--youtube {
+  --b: var(--youtube);
+  --bh: var(--youtube-hover);
+}
+.btn--linkedin {
+  --b: var(--linkedin);
+  --bh: var(--linkedin-hover);
+}
+/* Instagram's gradient, warm end at the bottom left as in its mark. The edge is
+   transparent so the gradient runs under it; hover lays a flat dark veil on top. */
+.btn--instagram,
+.btn--instagram:hover {
+  border-color: transparent;
+  background: linear-gradient(45deg, var(--instagram-3), var(--instagram-2), var(--instagram-1)) border-box;
+}
+.btn--instagram:hover {
+  background:
+    linear-gradient(rgb(0 0 0 / 0.16), rgb(0 0 0 / 0.16)) border-box,
+    linear-gradient(45deg, var(--instagram-3), var(--instagram-2), var(--instagram-1)) border-box;
+}
+.btn svg {
+  flex: none;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  margin: var(--space-24) 0 0;
+  padding: 0;
+  max-width: none;
+  list-style: none;
+}
+.actions li {
+  display: flex;
+}
+
+/* Header: a plain solid rectangle in the sky's top colour, so at the top of the
+   page it joins the hero without a seam. It sticks. */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: var(--sky-zenith);
+  color: var(--sky-ink);
+}
+/* Links in the centre, the language button and the theme toggle at the right.
+   The empty ::before balances the tools; on narrow screens it shrinks to nothing. */
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--header-h);
+}
+.site-header .wrap::before {
+  content: '';
+  flex: 1 1 0;
+}
+.header-tools {
+  flex: 1 1 0;
+  display: flex;
+  justify-content: flex-end;
+  padding-left: var(--space-8);
+}
+.site-header nav ul {
+  display: flex;
+  gap: var(--space-16);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-header nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.site-header nav a:hover,
+.site-header nav [aria-current] {
+  text-decoration: underline;
+}
+.tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-width: var(--tap);
+  height: var(--tap);
+  padding: 0 var(--space-8);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: 700 var(--text-s) / 1 var(--font-body);
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease);
+}
+.tool:hover,
+.tool[aria-expanded='true'] {
+  background: var(--sky-mid);
+}
+.tool svg {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.lang[hidden],
+.tool[hidden],
+.lang-menu[hidden] {
+  display: none;
+}
+/* The icon shows the current theme: a sun in light, a moon in dark. */
+.icon-moon,
+[data-theme='dark'] .icon-sun {
+  display: none;
+}
+[data-theme='dark'] .icon-moon {
+  display: block;
+}
+/* Language menu: a short opaque list under its button. */
+.lang {
+  position: relative;
+}
+.lang-menu {
+  position: absolute;
+  top: calc(100% + var(--space-4));
+  right: 0;
+  min-width: 10rem;
+  margin: 0;
+  padding: var(--space-4) 0;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  box-shadow: var(--shadow-menu);
+  list-style: none;
+}
+.lang-menu a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: var(--tap);
+  padding: 0 var(--space-16);
+  color: var(--ink);
+  text-decoration: none;
+}
+.lang-menu a:hover {
+  background: var(--surface);
+}
+.lang-menu [aria-current] {
+  font-weight: 700;
+}
+.lang-menu svg {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  color: var(--link);
+}
+.site-header .lang-menu :focus-visible {
+  outline-color: var(--focus);
+  outline-offset: -3px;
+}
+
+/* The sky: the top of every page. The text sits on the solid
+   top colour, so its contrast never depends on the gradient. Below it, ::after
+   is the fade: a wide, shallow ellipse anchored at the top centre whose eased
+   stops (tokens.css) run from that colour to the page colour. Its first stop is
+   past the ellipse's reach at the top corners, so no edge shows. */
+.sky {
+  --sky-fade-h: clamp(8rem, 14vw, 11rem);
+  --sky-pad: var(--space-64);
+  position: relative;
+  background: var(--sky-zenith);
+  color: var(--sky-ink);
+}
+.sky::after {
+  content: '';
+  display: block;
+  height: var(--sky-fade-h);
+  background: radial-gradient(ellipse 150% 100% at 50% 0, var(--sky-stops));
+}
+.sky > .wrap {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--sky-pad) var(--space-16);
+}
+.sky p {
+  margin: 0;
+}
+/* Page titles: "PROJECTS", "ABOUT". Clearly smaller than the name. */
+.page-title {
+  margin: 0;
+  font-weight: 900;
+  font-size: var(--text-title);
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+/* The 404 title: a sentence, so in its own case. */
+.page-title--long {
+  font-weight: 700;
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-display);
+  text-transform: none;
+}
+.sky .page-sub {
+  margin-top: var(--space-12);
+  font-size: var(--text-l);
+  font-weight: 700;
+  line-height: 1.4;
+}
+/* Overview: the name, the only giant title on the site, over a longer fade. */
+.sky--hero {
+  --sky-fade-h: clamp(12rem, 22vw, 17rem);
+}
+.hero {
+  text-align: center;
+}
+.hero .page-title {
+  font-size: var(--text-name);
+  line-height: var(--leading-name);
+  letter-spacing: 0.005em;
+}
+/* The name takes two lines on phones and one from 56em. */
+.hero .page-title span {
+  display: block;
+}
+.hero p {
+  max-width: none;
+}
+.hero .page-sub {
+  margin-top: var(--space-24);
+}
+/* Project pages: no text on the sky. It is just tall enough for the top half of
+   the picture, which straddles the end of the fade. */
+main {
+  --lead-w: min(100vw - 2 * var(--gutter), 36rem);
+  --lead-h: calc(var(--lead-w) / var(--lead-ratio, 2));
+}
+.sky--bare {
+  --sky-fade-h: calc(var(--lead-h) / 2 + var(--space-48));
+}
+
+/* Sky art: clouds at the two sides and a few doves by day, stars by
+   night. Static. Everything sits in places the text never reaches: the fade
+   below the text block (.art-fade, masked so the art dissolves with the sky),
+   the strip between the header and the title, and the page margins outside the
+   wrapper. Sizes are fluid, and the smaller pieces only appear on wider screens. */
+.sky-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: var(--sky-ink);
+  pointer-events: none;
+}
+.sky-art svg {
+  position: absolute;
+  fill: currentColor;
+}
+.art-fade {
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--sky-fade-h);
+  -webkit-mask-image: linear-gradient(#000 40%, transparent 92%);
+  mask-image: linear-gradient(#000 40%, transparent 92%);
+}
+.day {
+  position: absolute;
+  inset: 0;
+}
+.night,
+[data-theme='dark'] .day,
+.sky-art .wide,
+.c-l2,
+.c-r2,
+.d2,
+.d4,
+.d5 {
+  display: none;
+}
+[data-theme='dark'] .night {
+  display: block;
+}
+.cloud {
+  opacity: 0.94;
+}
+.c-l1 {
+  left: -1.75rem;
+  top: 30%;
+  width: clamp(6.5rem, 21vw, 19rem);
+}
+.c-r1 {
+  right: -2rem;
+  top: 42%;
+  width: clamp(7rem, 23vw, 21rem);
+  transform: scaleX(-1);
+}
+.c-l2 {
+  left: 13%;
+  top: 9%;
+  width: clamp(4rem, 7.5vw, 7.5rem);
+  opacity: 0.55;
+}
+.c-r2 {
+  right: 16%;
+  top: 10%;
+  width: clamp(3.5rem, 6.5vw, 6.5rem);
+  opacity: 0.5;
+  transform: scaleX(-1);
+}
+.d1 {
+  left: 26%;
+  top: 13%;
+  width: clamp(1.5rem, 3vw, 2.75rem);
+  transform: rotate(-6deg);
+}
+.d2 {
+  left: 31%;
+  top: 3%;
+  width: clamp(1rem, 2vw, 1.875rem);
+}
+.d3 {
+  right: 27%;
+  top: 30%;
+  width: clamp(1.25rem, 2.5vw, 2.25rem);
+  transform: rotate(-4deg);
+}
+.d4 {
+  right: 33%;
+  top: 8%;
+  width: clamp(0.875rem, 1.7vw, 1.5rem);
+  transform: rotate(-10deg);
+}
+.d5 {
+  left: 36%;
+  top: 31%;
+  width: clamp(0.875rem, 1.5vw, 1.375rem);
+}
+.stars {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* The strip between the header and the title; the last 20 px stay empty. */
+.stars-top {
+  bottom: auto;
+  height: calc(var(--sky-pad) - 1.25rem);
+}
+.sky--bare .stars-top,
+.stars-side {
+  display: none !important;
+}
+/* Project pages: the picture fills the middle, so the art keeps to the strip
+   above it on phones and to the room beside it on wider screens. */
+.sky--bare .c-l1 {
+  top: 3%;
+  width: 5.5rem;
+}
+.sky--bare .c-r1 {
+  top: 8%;
+  width: 6rem;
+}
+.sky--bare .d1 {
+  left: 45%;
+  top: 5%;
+  width: 1.375rem;
+}
+.sky--bare .d3 {
+  display: none;
+}
+
+/* Content below the sky */
+.section {
+  margin-top: var(--space-64);
+}
+.page > .section:first-child {
+  margin-top: 0;
+}
+.lead {
+  font-size: var(--text-l);
+  line-height: 1.5;
+}
+.column > * {
+  max-width: var(--measure);
+}
+
+/* Overview: featured projects. Text left, picture right; on phones the picture comes first. */
+.feature {
+  display: grid;
+  gap: var(--space-24);
+  margin-top: var(--space-48);
+}
+.feature + .feature {
+  margin-top: var(--space-64);
+}
+.feature h3 {
+  font-size: var(--text-3xl);
+  overflow-wrap: anywhere;
+}
+.feature-media {
+  order: -1;
+}
+.feature-media img {
+  width: 100%;
+}
+.points {
+  padding-left: var(--space-24);
+}
+.points li + li {
+  margin-top: var(--space-4);
+}
+
+/* Projects: cards. Each row shares a height and the buttons sit on its bottom edge. */
+.cards {
+  display: grid;
+  gap: var(--space-32);
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  list-style: none;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--border);
+}
+.card-media {
+  background: var(--surface);
+}
+/* One shape for every picture. A taller one is cropped toward its lower part,
+   where the Nightmare Bonnie artwork has its face. */
+.card-media img {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  object-position: 50% 75%;
+}
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-24);
+}
+.card h2 {
+  font-size: var(--text-2xl);
+  overflow-wrap: anywhere;
+}
+.card p {
+  margin-bottom: var(--space-24);
+}
+.card .actions {
+  margin-top: auto;
+}
+.card .actions li {
+  flex: 1 1 11rem;
+}
+.card .btn {
+  flex: 1;
+}
+
+/* About: the text, and the profile picture in its square box. The picture comes
+   first on phones and sits at the right from 56em. */
+.about {
+  display: grid;
+  gap: var(--space-32);
+}
+.portrait {
+  order: -1;
+  width: clamp(10rem, 50vw, 14rem);
+  border: 1px solid var(--border);
+}
+.portrait img {
+  width: 100%;
+}
+
+/* About: education */
+.edu {
+  padding: 0;
+  list-style: none;
+}
+.edu li + li {
+  margin-top: var(--space-24);
+}
+.edu span {
+  display: block;
+}
+
+/* Project page: the picture, half on the sky; then the title, the one-line
+   description and the buttons, centred; then the bulleted sections. */
+.project-lead {
+  position: relative;
+  width: var(--lead-w);
+  max-width: 100%;
+  margin: calc(var(--lead-h) / -2) auto 0;
+}
+.project-lead img {
+  width: 100%;
+}
+.pixel img {
+  image-rendering: pixelated;
+}
+.project-head {
+  margin-top: var(--space-32);
+  text-align: center;
+}
+.project-head h1 {
+  overflow-wrap: anywhere;
+}
+.project-head p {
+  margin-inline: auto;
+  max-width: 44ch;
+}
+.project-head .actions {
+  justify-content: center;
+}
+.project-body {
+  max-width: var(--measure);
+  margin: var(--space-64) auto 0;
+}
+.project-body h2 {
+  margin-top: var(--space-48);
+}
+.project-body h2:first-child {
+  margin-top: 0;
+}
+/* Both edges of the text line up (Vincent, 2026-11-12). Hyphenation keeps the
+   word spacing even; headings stay left-aligned. */
+.project-body p,
+.project-body li {
+  text-align: justify;
+  hyphens: auto;
+  text-wrap: wrap;
+}
+.project-body ol.points li::marker {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Footer: the opposite blue, rising out of the page with the sky's fade turned
+   over. The text sits on the solid colour below the fade. */
+.site-footer {
+  margin-top: var(--space-64);
+  background: var(--footer-bg);
+  color: var(--footer-ink);
+}
+.site-footer::before {
+  content: '';
+  display: block;
+  height: clamp(8rem, 16vw, 13rem);
+  background: radial-gradient(ellipse 150% 100% at 50% 100%, var(--footer-stops));
+}
+.site-footer .wrap {
+  padding-block: var(--space-16) var(--space-32);
+}
+.footer-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 12rem));
+  gap: var(--space-32);
+  margin-bottom: var(--space-24);
+}
+.site-footer h2 {
+  margin: 0;
+  font: 700 var(--text-base) / var(--leading-body) var(--font-body);
+  letter-spacing: 0;
+}
+.site-footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: inherit;
+  text-decoration: none;
+}
+.site-footer a:hover {
+  text-decoration: underline;
+}
+.site-footer p {
+  margin: 0;
+  font-size: var(--text-s);
+}
+
+/* The narrowest phones: tighter header so links and tools share one 56 px row. */
+@media (max-width: 22.49em) {
+  .site-header .wrap {
+    padding-inline: var(--space-8);
+  }
+  .site-header nav ul {
+    gap: var(--space-8);
+  }
+  .site-header nav a {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 30em) {
+  .site-header nav ul {
+    gap: var(--space-32);
+  }
+}
+
+@media (min-width: 48em) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+  [data-theme='dark'] .sky-art .wide,
+  .c-l2,
+  .c-r2,
+  .d2,
+  .d4 {
+    display: block;
+  }
+  /* Beside the picture: positions are measured out from its two edges. */
+  .sky--bare {
+    --beside: calc(50% - var(--lead-w) / 2);
+  }
+  .sky--bare .c-l1 {
+    top: 26%;
+    width: clamp(6.5rem, 17vw, 17rem);
+  }
+  .sky--bare .c-r1 {
+    top: 38%;
+    width: clamp(7rem, 19vw, 19rem);
+  }
+  .sky--bare .c-l2 {
+    left: calc(var(--beside) - 15rem);
+    top: 5%;
+  }
+  .sky--bare .c-r2 {
+    right: calc(var(--beside) - 17rem);
+    top: 16%;
+  }
+  .sky--bare .d1 {
+    left: calc(var(--beside) - 5.5rem);
+    top: 20%;
+    width: clamp(1.5rem, 3vw, 2.75rem);
+  }
+  .sky--bare .d2 {
+    left: calc(var(--beside) - 9.5rem);
+    top: 44%;
+  }
+  .sky--bare .d3 {
+    display: block;
+    right: calc(var(--beside) - 5rem);
+    top: 30%;
+  }
+  .sky--bare .d4 {
+    right: calc(var(--beside) - 8.5rem);
+    top: 9%;
+  }
+}
+
+@media (min-width: 56em) {
+  .sky .page-sub {
+    font-size: var(--text-xl);
+  }
+  /* Titles sit a little lower in the short heroes on wide screens. */
+  .sky {
+    --sky-pad: var(--space-96);
+  }
+  .sky--hero {
+    --sky-pad: var(--space-64);
+  }
+  .d5 {
+    display: block;
+  }
+  .sky--bare .d5 {
+    display: none;
+  }
+  .hero .page-title span {
+    display: inline;
+  }
+  .about {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+    column-gap: var(--space-64);
+    align-items: start;
+  }
+  .portrait {
+    order: 0;
+    width: auto;
+  }
+  .feature {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    column-gap: var(--space-48);
+    align-items: center;
+  }
+  .feature + .feature {
+    margin-top: var(--space-96);
+  }
+  .feature-media {
+    order: 0;
+  }
+}
+
+/* Wide screens: stars also fill the page margins beside the wrapper. */
+@media (min-width: 80em) {
+  [data-theme='dark'] .stars-side {
+    display: block !important;
+    top: 0;
+    bottom: var(--sky-fade-h);
+    width: calc((100% - var(--wrap)) / 2 + var(--gutter) - 1.5rem);
+    height: auto;
+  }
+  [data-theme='dark'] .sky--bare .stars-side {
+    display: none !important;
+  }
+  .stars-l {
+    right: auto;
+  }
+  .stars-r {
+    left: auto;
+  }
+}

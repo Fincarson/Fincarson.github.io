@@ -1,0 +1,66 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import Contact from '../components/Contact.astro';
+import ProjectActions from '../components/ProjectActions.astro';
+import { site } from '../site.config';
+import { getProjects } from '../projects';
+
+const featured = (await getProjects()).filter((p) => p.data.featured);
+const [given, family] = site.name.split(' ');
+---
+
+<Base skyClass="sky--hero">
+  <div class="hero" slot="sky">
+    <h1 class="page-title"><span>{given}</span> <span>{family}</span></h1>
+    <p class="page-sub">{site.headline}</p>
+    <p>{site.motto}</p>
+  </div>
+
+  <div class="page wrap">
+    <section class="section" aria-labelledby="about-me">
+      <h2 id="about-me">About me</h2>
+      <p>{site.about}</p>
+      <ul class="actions">
+        <li><Button href="/about/">More about me</Button></li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="featured">
+      <h2 id="featured">Featured projects</h2>
+      {
+        featured.map(({ data }, i) => {
+          const media = data.media[0]!;
+          return (
+            <article class="feature">
+              <div>
+                <h3 set:html={data.title.replaceAll('_', '_<wbr>')} />
+                <p>{data.summary}</p>
+                <ul class="points">
+                  {data.highlights.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+                <ProjectActions project={featured[i]!} />
+              </div>
+              <div class:list={['feature-media', { pixel: media.pixel }]}>
+                <Picture
+                  src={media.src}
+                  alt={media.alt}
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  widths={[480, 800, 1200].filter((w) => w <= media.src.width)}
+                  sizes="(min-width: 76rem) 33rem, (min-width: 56em) 44vw, 100vw"
+                  loading="lazy"
+                />
+              </div>
+            </article>
+          );
+        })
+      }
+    </section>
+
+    <Contact />
+  </div>
+</Base>

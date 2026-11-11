@@ -1,0 +1,37 @@
+---
+// One project on the Projects page: picture, title, one-line description,
+// then the buttons pinned to the bottom. Every picture has the same shape.
+import { Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import ProjectActions from './ProjectActions.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  /** True for the pictures above the fold. */
+  eager?: boolean;
+}
+
+const { project, eager = false } = Astro.props;
+const { data } = project;
+const media = data.media[0]!;
+---
+
+<article class="card">
+  <div class:list={['card-media', { pixel: media.pixel }]}>
+    <Picture
+      src={media.src}
+      alt={media.alt}
+      formats={['avif']}
+      fallbackFormat="webp"
+      widths={[480, 800, 1200].filter((w) => w <= media.src.width)}
+      sizes="(min-width: 76rem) 36rem, (min-width: 48em) 47vw, 100vw"
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : undefined}
+    />
+  </div>
+  <div class="card-body">
+    <h2 set:html={data.title.replaceAll('_', '_<wbr>')} />
+    <p>{data.summary}</p>
+    <ProjectActions project={project} />
+  </div>
+</article>

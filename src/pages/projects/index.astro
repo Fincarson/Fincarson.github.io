@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getProjects } from '../../projects';
+
+const projects = await getProjects();
+---
+
+<Base
+  title="Projects"
+  description="Five projects by Vincent Jefferson: an FPGA game in Verilog, a Flutter budgeting app and three games in C and C++."
+>
+  <Fragment slot="sky">
+    <h1 class="page-title">Projects</h1>
+    <p class="page-sub">The Collection of My Projects</p>
+  </Fragment>
+
+  <div class="page wrap">
+    <ul class="cards">
+      {
+        projects.map((project, i) => (
+          <li>
+            <ProjectCard project={project} eager={i < 2} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Base>

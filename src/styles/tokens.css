@@ -1,0 +1,145 @@
+/* Design tokens. scripts/check-contrast.mjs reads the colours
+   from this file: keep every colour a six-digit hex, light tokens in the
+   first block and the dark overrides in the [data-theme='dark'] block. */
+
+:root {
+  color-scheme: light;
+
+  /* Colour, light. Light is the default for every visitor. */
+  --bg: #fdfdfe;
+  --surface: #f2f5f9;
+  --border: #d9dfe4;
+  --ink: #1a232b;
+  --ink-muted: #4d5660;
+  --ink-faint: #6a737c;
+  --brand: #0099ff;
+  --link: #005abb;
+  --link-hover: #0051b1;
+  --focus: #005abb;
+  --selection-ink: #1a232b;
+
+  /* Buttons. Internal ones are the same in both themes. */
+  --button: #005abb;
+  --button-hover: #0051b1;
+  --button-ink: #ffffff;
+  /* External buttons: each platform's own colour, white text.
+     Instagram is its own gradient, darker end only: the one brand gradient. */
+  --brand-ink: #ffffff;
+  --github: #24292f;
+  --github-hover: #32383f;
+  --github-border: #24292f;
+  --youtube: #cc0000;
+  --youtube-hover: #a80000;
+  --linkedin: #0a66c2;
+  --linkedin-hover: #004182;
+  --instagram-1: #833ab4;
+  --instagram-2: #c13584;
+  --instagram-3: #d62976;
+
+  /* The sky at the top of every page, and the footer glow.
+     White text may sit on anything from zenith to mid, never lower. */
+  --sky-zenith: #005abb;
+  --sky-mid: #0073d6;
+  --sky-low: #0099ff;
+  --sky-ink: #ffffff;
+  --footer-bg: #002341;
+  --footer-ink: #ffffff;
+  /* The eased fades: thirteen stops along an ease-in-out
+     curve from the solid colour to the page colour, bending through Sky Blue.
+     Computed with smoothstep, so recompute them if the end colours change. */
+  --sky-stops:
+    #005abb 34%, #005cbe 39.5%, #0164c5 45%, #066fcf 50.5%, #117dda 56%, #248fe4 61.5%, #3fa2ee 67%, #62b7f5 72.5%,
+    #8bccfa 78%, #b4dffd 83.5%, #d9eefe 89%, #f3f9fe 94.5%, #fdfdfe 100%;
+  --footer-stops:
+    #002341 34%, #002848 39.5%, #01345c 45%, #064778 50.5%, #115f97 56%, #2479b5 61.5%, #3f94cf 67%, #62afe4 72.5%,
+    #8bc8f2 78%, #b4ddfa 83.5%, #d9eefd 89%, #f3f9fe 94.5%, #fdfdfe 100%;
+
+  /* Type */
+  --font-display: 'Big Shoulders Display', 'Big Shoulders Display Fallback', 'Arial Narrow', sans-serif;
+  --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible Next Fallback', system-ui, sans-serif;
+  --text-s: 0.875rem;
+  --text-base: 1.0625rem;
+  --text-l: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: clamp(2.125rem, 1.9rem + 1vw, 2.5rem);
+  --text-4xl: clamp(2.5rem, 1.6rem + 4.5vw, 4.5rem);
+  --text-name: min(0.4rem + 19.5vw, 21.5vw, 11rem);
+  --text-title: clamp(3rem, 2.3rem + 3vw, 4.5rem);
+  --leading-body: 1.55;
+  --leading-heading: 1.05;
+  --leading-name: 0.88;
+  --tracking-display: 0.015em;
+  --measure: 66ch;
+
+  /* Space: 4 px base */
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-48: 3rem;
+  --space-64: 4rem;
+  --space-96: 6rem;
+  --wrap: 76rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --tap: 2.75rem;
+  --header-h: 3.5rem;
+
+  /* Depth. Corners are square everywhere: there is no radius token. */
+  --shadow-menu: 0 8px 16px rgb(0 35 65 / 0.18);
+  --focus-ring: 3px solid var(--focus);
+  --focus-offset: 3px;
+
+  /* Motion: hover and focus only */
+  --duration: 160ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (min-width: 56em) {
+  :root {
+    --text-name: min(1rem + 8.9vw, 9rem);
+  }
+}
+
+@media (min-width: 64em) {
+  :root {
+    --text-base: 1.125rem;
+  }
+}
+
+/* Dark: chosen with the header toggle, never taken from the device. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f171f;
+  --surface: #1a232b;
+  --border: #2b3640;
+  --ink: #e7ecf0;
+  --ink-muted: #b8bfc5;
+  --ink-faint: #b8bfc5;
+  --link: #0099ff;
+  --link-hover: #5cbbff;
+  --focus: #0099ff;
+  --selection-ink: #0f171f;
+  --github-border: #30363d;
+  --sky-zenith: #002341;
+  --sky-mid: #081d30;
+  --sky-low: #0f171f;
+  --sky-ink: #e7ecf0;
+  --footer-bg: #0073d6;
+  --sky-stops:
+    #002341 34%, #002340 39.5%, #01223e 45%, #02213c 50.5%, #042038 56%, #061e34 61.5%, #081d30 67%, #0a1c2c 72.5%,
+    #0b1a28 78%, #0d1924 83.5%, #0e1822 89%, #0f1720 94.5%, #0f171f 100%;
+  --footer-stops:
+    #0073d6 34%, #0071d2 39.5%, #016cc8 45%, #0265b9 50.5%, #045ba6 56%, #065091 61.5%, #08457a 67%, #0a3a64 72.5%,
+    #0b2f4e 78%, #0d253b 83.5%, #0e1e2c 89%, #0f1923 94.5%, #0f171f 100%;
+  --leading-body: 1.6;
+  --shadow-menu: 0 8px 16px rgb(0 0 0 / 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration: 0ms;
+  }
+}

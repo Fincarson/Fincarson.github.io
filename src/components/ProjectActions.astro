@@ -1,0 +1,39 @@
+---
+// The buttons under a project: write-up (optional), GitHub, and the video where one exists.
+// Each aria-label starts with the visible text and names the project.
+import type { CollectionEntry } from 'astro:content';
+import Button from './Button.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  /** False on the project's own page. */
+  writeUp?: boolean;
+}
+
+const { project, writeUp = true } = Astro.props;
+const { data } = project;
+---
+
+<ul class="actions">
+  {
+    writeUp && (
+      <li>
+        <Button href={`/projects/${data.slug}/`} label={`Read the write-up: ${data.title}`}>
+          Read the write-up
+        </Button>
+      </li>
+    )
+  }
+  <li>
+    <Button href={data.repo} icon="github" label={`View on GitHub: ${data.title}`}>View on GitHub</Button>
+  </li>
+  {
+    data.video && (
+      <li>
+        <Button href={data.video.url} icon="youtube" label={`${data.video.label}: ${data.title} (YouTube)`}>
+          {data.video.label}
+        </Button>
+      </li>
+    )
+  }
+</ul>
