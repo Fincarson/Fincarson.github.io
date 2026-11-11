@@ -96,8 +96,10 @@
   --gutter: clamp(1rem, 4vw, 3rem);
   --tap: 2.75rem;
   --header-h: 3.5rem;
-  /* The text box of the page hero: the title line and one subtitle line. */
+  /* The page hero: its text box (the title line and one subtitle line) and
+     the height of the fade below it. */
   --hero-h: 5.5rem;
+  --hero-fade: 9rem;
 
   /* Depth. Corners are square everywhere: there is no radius token. */
   --shadow-menu: 0 8px 16px rgb(0 35 65 / 0.18);
@@ -113,6 +115,7 @@
 @media (min-width: 48em) {
   :root {
     --hero-h: 7rem;
+    --hero-fade: 11rem;
   }
 }
 
@@ -125,6 +128,12 @@
 @media (min-width: 64em) {
   :root {
     --text-base: 1.125rem;
+  }
+}
+
+@media (min-width: 80em) {
+  :root {
+    --hero-fade: 12rem;
   }
 }
 

@@ -485,7 +485,7 @@ main:focus {
    box and runs through the theme's eleven stops (tokens.css) to the page
    colour. It changes from its first pixel and never stops, so no band shows. */
 .sky {
-  --sky-fade-h: 9rem;
+  --sky-fade-h: var(--hero-fade);
   --sky-pad: var(--space-48);
   --f: var(--sky-fade-h);
   position: relative;
@@ -835,10 +835,12 @@ h2 + .cards {
 }
 
 /* Project page: the picture, then the one-line description and the buttons,
-   centred; then the sections. The title is in the hero. */
+   centred; then the sections. The title is in the hero. The picture is pulled
+   up over the lower half of the hero's fade, in front of the sky art. */
 .project-lead {
+  position: relative;
   width: min(100%, 36rem);
-  margin: var(--space-16) auto 0;
+  margin: calc(var(--hero-fade) / -2) auto 0;
 }
 .project-lead img {
   width: 100%;
@@ -957,9 +959,6 @@ h2 + .cards {
 }
 
 @media (min-width: 48em) {
-  .sky:not(.sky--hero) {
-    --sky-fade-h: 11rem;
-  }
   .cards {
     grid-template-columns: 1fr 1fr;
   }
@@ -998,11 +997,8 @@ h2 + .cards {
   }
 }
 
-/* Wide screens: a longer fade, and stars also fill the page margins beside the wrapper. */
+/* Wide screens: stars also fill the page margins beside the wrapper. */
 @media (min-width: 80em) {
-  .sky:not(.sky--hero) {
-    --sky-fade-h: 12rem;
-  }
   [data-theme='dark'] .stars-side {
     display: block !important;
     top: 0;
