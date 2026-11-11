@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import Contact from '../components/Contact.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import Button from '../components/Button.astro';
+import { highlights, currentRoles } from '../experience';
 import { site } from '../site.config';
 import { getProjects } from '../projects';
 
@@ -17,9 +19,41 @@ const [given, family] = site.name.split(' ');
   </div>
 
   <div class="page wrap">
+    <section class="section" aria-labelledby="highlights">
+      <h2 id="highlights">Highlights</h2>
+      <ul class="highlights">
+        {
+          highlights.map((fact) => (
+            <li>
+              <a href={`/experience/#${fact.id}`}>{fact.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
     <section class="section" aria-labelledby="about-me">
       <h2 id="about-me">About me</h2>
       <p>{site.about}</p>
+      <ul class="actions">
+        <li><Button href="/about/">About me</Button></li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="experience">
+      <h2 id="experience">Experience</h2>
+      <ul class="roles">
+        {
+          currentRoles.map((role) => (
+            <li>
+              <strong>{role.title}</strong>, {role.org}, {role.dates}
+            </li>
+          ))
+        }
+      </ul>
+      <ul class="actions">
+        <li><Button href="/experience/">All experience</Button></li>
+      </ul>
     </section>
 
     <section class="section" aria-labelledby="featured">
@@ -32,6 +66,9 @@ const [given, family] = site.name.split(' ');
             </li>
           ))
         }
+      </ul>
+      <ul class="actions">
+        <li><Button href="/projects/">All projects</Button></li>
       </ul>
     </section>
 

@@ -1,0 +1,94 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { groups } from '../experience';
+
+// Certificates are linked as pictures, never shown on the page.
+const sections = await Promise.all(
+  groups.map(async (group) => ({
+    ...group,
+    entries: await Promise.all(
+      group.entries.map(async (entry) => ({
+        ...entry,
+        certificateUrl:
+          entry.certificate && (await getImage({ src: entry.certificate, format: 'webp', quality: 90 })).src,
+      })),
+    ),
+  })),
+);
+---
+
+<Base
+  title="Experience"
+  description="Experience, awards, education, certifications and languages of Vincent Jefferson, CS student at NTHU."
+  hero={{ title: 'Experience' }}
+>
+  <div class="page wrap xp">
+    <nav class="outline" aria-label="On this page">
+      <ul>
+        {
+          sections.map((group) => (
+            <li>
+              <a href={`#${group.id}`}>{group.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {
+      sections.map((group) => (
+        <section class="section" aria-labelledby={group.id}>
+          <h2 id={group.id}>{group.title}</h2>
+          <ul class="entries">
+            {group.entries.map((entry) => (
+              <li class:list={['entry', { 'entry--photo': entry.photo }]} id={entry.id}>
+                <div class="entry-text">
+                  <h3>{entry.title}</h3>
+                  {entry.org && <p>{entry.org}</p>}
+                  {entry.dates && <p class="entry-dates">{entry.dates}</p>}
+                  {entry.lines && (
+                    <div class="entry-lines">
+                      {entry.lines.map((line) => (
+                        <p>{line}</p>
+                      ))}
+                    </div>
+                  )}
+                  {(entry.links || entry.certificateUrl) && (
+                    <ul class="entry-links">
+                      {entry.links?.map((link) => (
+                        <li>
+                          <a href={link.href}>{link.label}</a>
+                        </li>
+                      ))}
+                      {entry.certificateUrl && (
+                        <li>
+                          <a href={entry.certificateUrl} aria-label={`View certificate (image): ${entry.title}`}>
+                            View certificate (image)
+                          </a>
+                        </li>
+                      )}
+                    </ul>
+                  )}
+                </div>
+                {entry.photo && (
+                  <div class="entry-photo">
+                    <Picture
+                      src={entry.photo.src}
+                      alt={entry.photo.alt}
+                      formats={['avif']}
+                      fallbackFormat="webp"
+                      widths={[320, 640]}
+                      sizes="(min-width: 48em) 15rem, min(100vw, 20rem)"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</Base>

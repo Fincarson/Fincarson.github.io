@@ -8,10 +8,14 @@ const projects = defineCollection({
     z.object({
       title: z.string(),
       slug: z.string(),
-      order: z.number().int(),
+      /** The months it ran, as YYYY-MM. Shown on the card and the page; the list sorts by them. */
+      start: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
+      end: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/).optional(),
       featured: z.boolean().default(false),
       /** The one-line description under the title. */
       summary: z.string(),
+      /** One plain line under the summary on the card. */
+      award: z.string().optional(),
       /* The project page: facts only. An empty list leaves its
          section out; never fill one in without a source. */
       /** "Description": paragraphs, set justified. */

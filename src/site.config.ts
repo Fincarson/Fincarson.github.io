@@ -6,15 +6,15 @@ export const site = {
   name: 'Vincent Jefferson',
   headline: 'CS student at @NTHU',
   motto: 'Fortune favors the bold.',
-  /** The About description: exactly one sentence. */
-  about:
-    'I am a computer science student at National Tsing Hua University (NTHU), in the Department of Computer Science.',
+  /** The "About me" line on the Overview. The About page holds the longer text. */
+  about: "I'm studying to become an AI engineer, and I'm also learning cybersecurity and network engineering.",
   description:
-    'Vincent Jefferson, CS student at NTHU. Projects in FPGA design, Flutter and C++ game development.',
+    'Vincent Jefferson, CS student at NTHU studying to become an AI engineer. Projects, experience and awards.',
 };
 
 export const sections = [
   { label: 'Overview', path: '/', enabled: true },
+  { label: 'Experience', path: '/experience/', enabled: true },
   { label: 'Projects', path: '/projects/', enabled: true },
   { label: 'About', path: '/about/', enabled: true },
 ];

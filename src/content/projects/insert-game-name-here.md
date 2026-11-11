@@ -1,7 +1,8 @@
 ---
 title: Insert_Game_Name_Here
 slug: insert-game-name-here
-order: 3
+start: "2025-03"
+end: "2025-06"
 featured: false
 summary: A 2.5D action game where you fight enemies, collect coins, buy weapons and defeat a boss.
 about:
@@ -28,6 +29,8 @@ video:
   label: Watch the trailer
   url: https://youtu.be/EKWCecYS4os
 media:
+  - src: ../../assets/projects/insert-game-name-here/cover.webp
+    alt: "Insert_Game_Name_Here cover: the title in capitals over a pixel art cabin with a fireplace, a pink-haired character with two rifles and a staff, and a dark boss with many arms."
   - src: ../../assets/projects/insert-game-name-here/main-menu.png
     alt: "The game's main menu: Play, Settings, Leaderboard, Credits and Quit over a pixel art cabin with a lit fireplace, a rainy window and a small white-haired character."
 ---

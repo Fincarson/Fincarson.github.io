@@ -1,8 +1,9 @@
 ---
 title: SaveWiser
 slug: savewiser
-order: 2
-featured: true
+start: "2025-05"
+end: "2025-08"
+featured: false
 summary: A savings and budgeting app for students and young people.
 about:
   - SaveWiser is a mobile app for students and young people who want to take control of their money. It splits money into needs, wants and savings by the 50/30/20 rule and shows on the home screen whether you are on track. You can set savings goals, log daily spending and get an alert when you go over budget.

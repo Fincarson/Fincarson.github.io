@@ -1,8 +1,9 @@
 ---
 title: FNAF4_with_FPGA
 slug: fnaf4-with-fpga
-order: 1
-featured: true
+start: "2025-10"
+end: "2025-12"
+featured: false
 summary: Five Nights at Freddy's 4 recreated as pure digital logic on an FPGA, with no processor and no operating system.
 about:
   - The whole game is a circuit on the chip. The game logic, the VGA timing, the audio driver and the keyboard interface all run at the same time, kept in order by a single clock. Nothing underneath it executes code.

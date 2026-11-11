@@ -799,11 +799,25 @@ h2 + .cards {
   padding: var(--space-24);
 }
 .card-title {
+  margin-bottom: var(--space-4);
   font-size: var(--text-2xl);
   overflow-wrap: anywhere;
 }
 .card p {
   margin-bottom: var(--space-24);
+}
+/* The months the project ran, under its title. */
+.card .card-dates,
+.project-dates {
+  color: var(--ink-muted);
+}
+.card .card-dates {
+  margin-bottom: var(--space-12);
+}
+/* An award: one plain line, close under the summary. */
+.card .card-award {
+  margin-top: calc(var(--space-12) * -1);
+  font-weight: 700;
 }
 .card .actions {
   margin-top: auto;
@@ -835,16 +849,108 @@ h2 + .cards {
   width: 100%;
 }
 
-/* About: education */
-.edu {
+/* Overview: three facts in one plain row (stacked on phones), each a link to
+   its entry on the Experience page; and the roles held now, one line each. */
+.highlights {
+  display: grid;
+  margin: var(--space-24) 0 0;
+  padding: 0;
+  max-width: none;
+  list-style: none;
+}
+.highlights li {
+  border-top: 1px solid var(--border);
+}
+.highlights a {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding-block: var(--space-12);
+  font-size: var(--text-l);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.roles {
   padding: 0;
   list-style: none;
 }
-.edu li + li {
-  margin-top: var(--space-24);
+.roles li + li {
+  margin-top: var(--space-8);
 }
-.edu span {
-  display: block;
+
+/* Experience: an outline of jump links, then each group as a list of entries
+   divided by a line. An entry is its title in bold, the organisation, the
+   dates and a few short lines; a photo, where there is one, is small and sits
+   beside the text from 48em and under it on phones. */
+.xp {
+  margin-top: var(--space-32);
+}
+/* One column, wide enough for the text and a photo beside it. */
+.xp > * {
+  max-width: 56rem;
+}
+.outline ul,
+.entry-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-24);
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  list-style: none;
+}
+.outline a,
+.entry-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+}
+.outline a {
+  font-weight: 700;
+}
+.outline + .section {
+  margin-top: var(--space-32);
+}
+.entries {
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  list-style: none;
+  border-bottom: 1px solid var(--border);
+}
+.entry {
+  display: grid;
+  gap: var(--space-16);
+  padding-block: var(--space-24);
+  border-top: 1px solid var(--border);
+}
+.entry h3 {
+  margin: 0 0 var(--space-4);
+  font: 700 var(--text-l) / 1.3 var(--font-body);
+  letter-spacing: 0;
+  text-wrap: pretty;
+}
+.entry p {
+  margin: 0;
+}
+.entry-text > * {
+  max-width: var(--measure);
+}
+.entry-dates {
+  color: var(--ink-muted);
+}
+.entry-lines {
+  margin-top: var(--space-12);
+}
+.entry-lines p + p,
+.entry-links {
+  margin-top: var(--space-4);
+}
+.entry-photo {
+  width: min(100%, 20rem);
+}
+.entry-photo img {
+  width: 100%;
 }
 
 /* Project page: the picture, then the one-line description and the buttons,
@@ -871,6 +977,16 @@ h2 + .cards {
 }
 .project-head .actions {
   justify-content: center;
+}
+.project-head .project-dates {
+  margin-top: var(--space-8);
+}
+/* More pictures, under the description. */
+.project-more {
+  margin-block: var(--space-24);
+}
+.project-more img {
+  width: 100%;
 }
 .project-body {
   max-width: var(--measure);
@@ -952,8 +1068,21 @@ h2 + .cards {
   }
 }
 
-/* Phones: the menu button at the left, the tools at the right. */
+/* Phones: the menu button at the left, the tools at the right. Without
+   scripts the links stay and take a second row when one is too narrow. */
 @media (max-width: 47.99em) {
+  html:not(.js) .site-header .wrap {
+    height: auto;
+    min-height: var(--header-h);
+  }
+  html:not(.js) .site-header .wrap::before {
+    content: none;
+  }
+  html:not(.js) .site-header nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0;
+  }
   .js .site-header nav {
     display: none;
   }
@@ -974,6 +1103,18 @@ h2 + .cards {
 @media (min-width: 48em) {
   .cards {
     grid-template-columns: 1fr 1fr;
+  }
+  .highlights {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--space-32);
+  }
+  .entry--photo {
+    grid-template-columns: minmax(0, 1fr) 15rem;
+    column-gap: var(--space-32);
+    align-items: start;
+  }
+  .entry-photo {
+    width: auto;
   }
   [data-theme='dark'] .sky-art .wide,
   .c-l2,
@@ -1002,6 +1143,9 @@ h2 + .cards {
     grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
     column-gap: var(--space-64);
     align-items: start;
+    margin-top: var(--space-48);
+  }
+  .xp {
     margin-top: var(--space-48);
   }
   .portrait {

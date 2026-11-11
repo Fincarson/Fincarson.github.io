@@ -1,9 +1,11 @@
 ---
-// One project, on Projects and Overview: picture, title, one-line description,
-// then the buttons pinned to the bottom. Every picture has the same shape.
+// One project, on Projects and Overview: picture, title, dates, one-line
+// description, an award where there is one, then the buttons pinned to the
+// bottom. Every picture has the same shape.
 import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import ProjectActions from './ProjectActions.astro';
+import { projectDates } from '../projects';
 
 interface Props {
   project: CollectionEntry<'projects'>;
@@ -33,7 +35,9 @@ const media = data.media[0]!;
   </div>
   <div class="card-body">
     <Title class="card-title" set:html={data.title.replaceAll('_', '_<wbr>')} />
+    <p class="card-dates">{projectDates(data)}</p>
     <p>{data.summary}</p>
+    {data.award && <p class="card-award">{data.award}</p>}
     <ProjectActions project={project} />
   </div>
 </article>

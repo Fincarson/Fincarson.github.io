@@ -2,35 +2,22 @@
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Contact from '../components/Contact.astro';
-import { site } from '../site.config';
 import portrait from '../assets/profile-picture.png';
 ---
 
 <Base
   title="About"
-  description="About Vincent Jefferson: computer science student at National Tsing Hua University (NTHU), 2024 to 2028."
+  description="About Vincent Jefferson: computer science student at National Tsing Hua University (NTHU) in Taiwan, studying to become an AI engineer."
   hero={{ title: 'About' }}
 >
   <div class="page wrap about">
     <div class="column">
       <h2>Hi, I'm Vincent!</h2>
-      <p class="lead">{site.about}</p>
-
-    <section class="section" aria-labelledby="education">
-      <h2 id="education">Education</h2>
-      <ul class="edu">
-        <li>
-          <strong>Bachelor in Computer Science</strong>
-          <span>National Tsing Hua University (NTHU)</span>
-          <span>2024 to 2028</span>
-        </li>
-        <li>
-          <strong>High school</strong>
-          <span>SMAK 2 BPK PENABUR Bandung</span>
-          <span>2021 to 2024</span>
-        </li>
-      </ul>
-    </section>
+      <p class="lead">
+        I'm a computer science student at National Tsing Hua University (NTHU) in Taiwan. I'm studying to become an AI
+        engineer, and I'm also learning cybersecurity and network engineering.
+      </p>
+      <p class="lead">Outside class, I read about AI agents and prompting, and I practice configuring Cisco devices.</p>
 
       <Contact />
     </div>
