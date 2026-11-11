@@ -1,0 +1,20 @@
+---
+// The hero of every page except the Overview: a title and an optional subtitle
+// in a box of one fixed height, so the hero is identical from page to page.
+// The layout renders it; a page only passes `hero` to Base.
+// The title is always one line: --chars lets the stylesheet shrink a long one
+// to the width of the screen.
+interface Props {
+  title: string;
+  subtitle?: string;
+  /** Keep the title's own spelling instead of capitals (project names, sentences). */
+  plain?: boolean;
+}
+
+const { title, subtitle, plain = false } = Astro.props;
+---
+
+<div class="page-hero">
+  <h1 class:list={['page-title', { 'page-title--plain': plain }]} style={`--chars: ${title.length}`}>{title}</h1>
+  {subtitle && <p class="page-sub">{subtitle}</p>}
+</div>

@@ -12,8 +12,6 @@ const projects = defineCollection({
       featured: z.boolean().default(false),
       /** The one-line description under the title. */
       summary: z.string(),
-      /** Overview bullets. Facts only; ask Vincent before adding any. */
-      highlights: z.array(z.string()).default([]),
       /* The project page: facts only. An empty list leaves its
          section out; never fill one in without a source. */
       /** "Description": paragraphs, set justified. */

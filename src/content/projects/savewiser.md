@@ -4,10 +4,6 @@ slug: savewiser
 order: 2
 featured: true
 summary: A savings and budgeting app for students and young people.
-highlights:
-  - Built the user interface (front end)
-  - Used Flutter, Dart, Hive and fl_chart
-  - Team project
 about:
   - SaveWiser is a mobile app for students and young people who want to take control of their money. It splits money into needs, wants and savings by the 50/30/20 rule and shows on the home screen whether you are on track. You can set savings goals, log daily spending and get an alert when you go over budget.
   - To make saving a habit, the app can lock a chosen share of income into savings automatically, with an optional guardian passcode for withdrawals. It also sends a daily reminder at a time you choose and can give optional AI savings advice. All financial data stays on the device.

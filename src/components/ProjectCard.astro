@@ -1,5 +1,5 @@
 ---
-// One project on the Projects page: picture, title, one-line description,
+// One project, on Projects and Overview: picture, title, one-line description,
 // then the buttons pinned to the bottom. Every picture has the same shape.
 import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
@@ -9,9 +9,11 @@ interface Props {
   project: CollectionEntry<'projects'>;
   /** True for the pictures above the fold. */
   eager?: boolean;
+  /** The title's heading level: h3 where the cards sit under a section heading. */
+  level?: 'h2' | 'h3';
 }
 
-const { project, eager = false } = Astro.props;
+const { project, eager = false, level: Title = 'h2' } = Astro.props;
 const { data } = project;
 const media = data.media[0]!;
 ---
@@ -30,7 +32,7 @@ const media = data.media[0]!;
     />
   </div>
   <div class="card-body">
-    <h2 set:html={data.title.replaceAll('_', '_<wbr>')} />
+    <Title class="card-title" set:html={data.title.replaceAll('_', '_<wbr>')} />
     <p>{data.summary}</p>
     <ProjectActions project={project} />
   </div>

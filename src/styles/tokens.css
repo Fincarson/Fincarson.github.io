@@ -36,28 +36,38 @@
   --instagram-2: #c13584;
   --instagram-3: #d62976;
 
-  /* The sky at the top of every page, and the footer glow.
-     White text may sit on anything from zenith to mid, never lower. */
-  --sky-zenith: #005abb;
-  --sky-mid: #0073d6;
-  --sky-low: #0099ff;
+  /* The sky at the top of every page. White text sits only on the zenith
+     (3.39:1), so it is always large text. --sky-mid is the hover ground of
+     the header controls. */
+  --sky-zenith: #0e91e5;
+  --sky-mid: #0a7fcb;
   --sky-ink: #ffffff;
+  /* The sky's fade, top to bottom, from the zenith to the page colour.
+     global.css places the stops; the last three ease the fade into the page. */
+  --sky-1: #1f99e6;
+  --sky-2: #2e9fe4;
+  --sky-3: #51afe5;
+  --sky-4: #73bfe5;
+  --sky-5: #93cee7;
+  --sky-6: #b1dbed;
+  --sky-7: #c6e4ec;
+  --sky-8: #d8ebeb;
+  --sky-9: #e0efef;
+  --sky-10: #edf5f6;
+  --sky-11: #f8fbfb;
+  /* The footer: page colour at the top, easing into the footer colour. */
   --footer-bg: #002341;
   --footer-ink: #ffffff;
-  /* The eased fades: thirteen stops along an ease-in-out
-     curve from the solid colour to the page colour, bending through Sky Blue.
-     Computed with smoothstep, so recompute them if the end colours change. */
-  --sky-stops:
-    #005abb 34%, #005cbe 39.5%, #0164c5 45%, #066fcf 50.5%, #117dda 56%, #248fe4 61.5%, #3fa2ee 67%, #62b7f5 72.5%,
-    #8bccfa 78%, #b4dffd 83.5%, #d9eefe 89%, #f3f9fe 94.5%, #fdfdfe 100%;
   --footer-stops:
-    #002341 34%, #002848 39.5%, #01345c 45%, #064778 50.5%, #115f97 56%, #2479b5 61.5%, #3f94cf 67%, #62afe4 72.5%,
-    #8bc8f2 78%, #b4ddfa 83.5%, #d9eefd 89%, #f3f9fe 94.5%, #fdfdfe 100%;
+    #fdfdfe 0%, #f3f9fe 8.33%, #d9eefd 16.67%, #b4ddfa 25%, #8bc8f2 33.33%, #62afe4 41.67%, #3f94cf 50%, #2479b5 58.33%,
+    #115f97 66.67%, #064778 75%, #01345c 83.33%, #002848 91.67%, #002341 100%;
 
   /* Type */
   --font-display: 'Big Shoulders Display', 'Big Shoulders Display Fallback', 'Arial Narrow', sans-serif;
   --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible Next Fallback', system-ui, sans-serif;
   --text-s: 0.875rem;
+  /* Bold text on the header: 19 px, above the 18.66 px large-text line. */
+  --text-sky: 1.1875rem;
   --text-base: 1.0625rem;
   --text-l: 1.25rem;
   --text-xl: 1.5rem;
@@ -86,15 +96,24 @@
   --gutter: clamp(1rem, 4vw, 3rem);
   --tap: 2.75rem;
   --header-h: 3.5rem;
+  /* The text box of the page hero: the title line and one subtitle line. */
+  --hero-h: 5.5rem;
 
   /* Depth. Corners are square everywhere: there is no radius token. */
   --shadow-menu: 0 8px 16px rgb(0 35 65 / 0.18);
   --focus-ring: 3px solid var(--focus);
   --focus-offset: 3px;
 
-  /* Motion: hover and focus only */
+  /* Motion: hover and focus, and the phone menu sliding in */
   --duration: 160ms;
+  --slide: 240ms;
   --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (min-width: 48em) {
+  :root {
+    --hero-h: 7rem;
+  }
 }
 
 @media (min-width: 56em) {
@@ -125,21 +144,28 @@
   --github-border: #30363d;
   --sky-zenith: #002341;
   --sky-mid: #081d30;
-  --sky-low: #0f171f;
   --sky-ink: #e7ecf0;
+  --sky-1: #01223f;
+  --sky-2: #02213c;
+  --sky-3: #042037;
+  --sky-4: #061e33;
+  --sky-5: #081c2e;
+  --sky-6: #0a1b2a;
+  --sky-7: #0c1a27;
+  --sky-8: #0d1924;
+  --sky-9: #0d1823;
+  --sky-10: #0e1821;
+  --sky-11: #0f1720;
   --footer-bg: #0073d6;
-  --sky-stops:
-    #002341 34%, #002340 39.5%, #01223e 45%, #02213c 50.5%, #042038 56%, #061e34 61.5%, #081d30 67%, #0a1c2c 72.5%,
-    #0b1a28 78%, #0d1924 83.5%, #0e1822 89%, #0f1720 94.5%, #0f171f 100%;
   --footer-stops:
-    #0073d6 34%, #0071d2 39.5%, #016cc8 45%, #0265b9 50.5%, #045ba6 56%, #065091 61.5%, #08457a 67%, #0a3a64 72.5%,
-    #0b2f4e 78%, #0d253b 83.5%, #0e1e2c 89%, #0f1923 94.5%, #0f171f 100%;
-  --leading-body: 1.6;
+    #0f171f 0%, #0f1923 8.33%, #0e1e2c 16.67%, #0d253b 25%, #0b2f4e 33.33%, #0a3a64 41.67%, #08457a 50%, #065091 58.33%,
+    #045ba6 66.67%, #0265b9 75%, #016cc8 83.33%, #0071d2 91.67%, #0073d6 100%;
   --shadow-menu: 0 8px 16px rgb(0 0 0 / 0.5);
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration: 0ms;
+    --slide: 0ms;
   }
 }

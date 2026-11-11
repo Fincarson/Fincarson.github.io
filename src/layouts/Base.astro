@@ -1,24 +1,20 @@
 ---
 import { site, sections, profileLinks } from '../site.config';
 import '../styles/global.css';
+import PageHero from '../components/PageHero.astro';
 import bodyFont from '../assets/fonts/atkinson-hyperlegible-next-400.woff2?url';
-import displayFont from '../assets/fonts/big-shoulders-display-700.woff2?url';
-import nameFont from '../assets/fonts/big-shoulders-display-900.woff2?url';
+import titleFont from '../assets/fonts/big-shoulders-display-900.woff2?url';
 
 interface Props {
   title?: string;
   description?: string;
-  /** False where the page title is set in display 700 (project pages, 404), so the 900 file is not preloaded. */
-  heavyTitle?: boolean;
   /** The 404 page: it has no address of its own, so no canonical link, and it stays out of search. */
   notFound?: boolean;
-  /** A modifier for the sky: 'sky--hero' on Overview, 'sky--bare' on project pages. */
-  skyClass?: string;
-  /** Inline custom properties for main (the project picture's aspect ratio). */
-  mainStyle?: string;
+  /** The page hero. Every page passes this except the Overview, which fills the `sky` slot itself. */
+  hero?: { title: string; subtitle?: string; plain?: boolean };
 }
 
-const { title, description = site.description, heavyTitle = true, notFound = false, skyClass, mainStyle } = Astro.props;
+const { title, description = site.description, notFound = false, hero } = Astro.props;
 const pageTitle = title ? `${title} | ${site.name}` : `${site.name}, ${site.headline}`;
 const nav = sections.filter((s) => s.enabled);
 const path = Astro.url.pathname;
@@ -26,17 +22,31 @@ const isCurrent = (p: string) => (p === '/' ? path === '/' : path.startsWith(p))
 const canonical = new URL(path, Astro.site);
 const shareImage = new URL('/og.png', Astro.site);
 
-// Stars for the night sky: plain dots of varied size and brightness.
-// A seeded generator places them, so every build draws the same sky.
+// Stars for the night sky: plain dots of varied size, brightness and colour.
+// Real star colours: mostly white and blue-white, some pale yellow and orange,
+// a few faint red ones. A seeded generator places them, so every build draws
+// the same sky.
+const starColours = [
+  ...Array(5).fill('#ffffff'),
+  ...Array(4).fill('#cad7ff'),
+  ...Array(3).fill('#9bb0ff'),
+  ...Array(2).fill('#fff4ea'),
+  '#ffd2a1',
+  '#ffcc6f',
+  '#ffb08a',
+];
 function stars(seed: number, count: number) {
   let s = seed;
   const rnd = () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
-  return Array.from({ length: count }, () => ({
-    cx: `${(rnd() * 100).toFixed(1)}%`,
-    cy: `${(rnd() * 100).toFixed(1)}%`,
-    r: (0.6 + rnd() ** 2 * 1.2).toFixed(1),
-    opacity: (0.35 + rnd() * 0.6).toFixed(2),
-  }));
+  return Array.from({ length: count }, () => {
+    const cx = `${(rnd() * 100).toFixed(1)}%`;
+    const cy = `${(rnd() * 100).toFixed(1)}%`;
+    const r = (0.6 + rnd() ** 2 * 1.4).toFixed(1);
+    const bright = 0.4 + rnd() * 0.6;
+    const fill = starColours[Math.floor(rnd() * starColours.length)]!;
+    // The red ones are the faint ones.
+    return { cx, cy, r, fill, opacity: (fill === '#ffb08a' ? bright * 0.6 : bright).toFixed(2) };
+  });
 }
 ---
 
@@ -45,8 +55,9 @@ function stars(seed: number, count: number) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Applies the saved theme before first paint. The choice never leaves the browser. -->
+    <!-- Marks that scripts run, and applies the saved theme before first paint. The choice never leaves the browser. -->
     <script is:inline>
+      document.documentElement.classList.add('js');
       try {
         if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';
       } catch {}
@@ -69,12 +80,18 @@ function stars(seed: number, count: number) {
     <meta property="og:image:alt" content={`${site.name}. ${site.headline}. ${site.motto}`} />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={heavyTitle ? nameFont : displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={titleFont} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <a class="skip" href="#main">Skip to main content</a>
     <header class="site-header">
       <div class="wrap">
+        <!-- Phones: opens the sidebar below. Shown by CSS once scripts run. -->
+        <button class="tool menu-button" type="button" aria-label="Menu" aria-haspopup="dialog" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" focusable="false">
+            <path d="M3 6h18M3 12h18M3 18h18"></path>
+          </svg>
+        </button>
         <nav aria-label="Main">
           <ul>
             {
@@ -132,10 +149,35 @@ function stars(seed: number, count: number) {
         </div>
       </div>
     </header>
-    <main id="main" tabindex="-1" style={mainStyle}>
-      <div class:list={['sky', skyClass]}>
-        <!-- Sky art, drawn for this site: clouds and doves by day, stars by night. Static, decorative,
-             and kept clear of the text (global.css). -->
+    <!-- The phone sidebar: a modal dialog, so focus stays inside it and the page behind is inert. -->
+    <dialog class="menu" id="menu" aria-label="Menu">
+      <div class="menu-panel">
+        <div class="menu-top">
+          <button class="tool menu-close" type="button" aria-label="Close menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" focusable="false">
+              <path d="M5 5l14 14M19 5L5 19"></path>
+            </svg>
+          </button>
+        </div>
+        <nav aria-label="Pages">
+          <ul>
+            {
+              nav.map((s) => (
+                <li>
+                  <a href={s.path} aria-current={isCurrent(s.path) ? 'page' : undefined}>
+                    {s.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </dialog>
+    <main id="main" tabindex="-1">
+      <div class:list={['sky', { 'sky--hero': !hero }]}>
+        <!-- Sky art, drawn for this site: clouds and doves by day, stars and one shooting star by night.
+             Decorative, and kept clear of the text (global.css). -->
         <div class="sky-art" aria-hidden="true">
           <svg class="art-defs" width="0" height="0" focusable="false">
             <symbol id="dove-a" viewBox="0 0 64 48">
@@ -167,6 +209,9 @@ function stars(seed: number, count: number) {
               {stars(7, 26).map((star) => <circle {...star} />)}
               <g class="wide">{stars(23, 22).map((star) => <circle {...star} />)}</g>
             </svg>
+            <svg class="night shooting" viewBox="0 0 120 2" preserveAspectRatio="none">
+              <path d="M0 1L120 0v2z"></path>
+            </svg>
           </div>
           <svg class="night stars stars-top">
             {stars(41, 9).map((star) => <circle {...star} />)}
@@ -175,13 +220,9 @@ function stars(seed: number, count: number) {
           <svg class="night stars stars-side stars-l">{stars(77, 8).map((star) => <circle {...star} />)}</svg>
           <svg class="night stars stars-side stars-r">{stars(91, 8).map((star) => <circle {...star} />)}</svg>
         </div>
-        {
-          Astro.slots.has('sky') && (
-            <div class="wrap">
-              <slot name="sky" />
-            </div>
-          )
-        }
+        <div class="wrap">
+          {hero ? <PageHero {...hero} /> : <slot name="sky" />}
+        </div>
       </div>
       <slot />
     </main>
@@ -258,6 +299,37 @@ function stars(seed: number, count: number) {
         document.addEventListener('click', (e) => {
           if (!lang.contains(e.target)) setOpen(false);
         });
+
+        // Phone menu: the dialog itself handles Escape, the focus trap and the return of focus.
+        // A click on the dimmed area lands on the dialog element; the panel covers the rest.
+        const sidebar = document.getElementById('menu');
+        const opener = document.querySelector('.menu-button');
+        opener.addEventListener('click', () => {
+          sidebar.showModal();
+          opener.setAttribute('aria-expanded', true);
+        });
+        sidebar.addEventListener('click', (e) => {
+          if (e.target === sidebar || e.target.closest('.menu-close')) sidebar.close();
+        });
+        sidebar.addEventListener('close', () => opener.setAttribute('aria-expanded', false));
+
+        // Shooting star: every 8 to 15 seconds, in the night sky only, at a new place
+        // in the fade below the text. Never started when reduced motion is asked for.
+        const star = document.querySelector('.shooting');
+        const still = matchMedia('(prefers-reduced-motion: reduce)');
+        const wait = () => setTimeout(shoot, 8000 + Math.random() * 7000);
+        const shoot = () => {
+          if (still.matches) return;
+          if (isDark() && !document.hidden) {
+            star.style.setProperty('--x', `${5 + Math.random() * 50}%`);
+            star.style.setProperty('--y', `${4 + Math.random() * 36}%`);
+            star.classList.remove('go');
+            star.getBoundingClientRect();
+            star.classList.add('go');
+          }
+          wait();
+        };
+        if (!still.matches) wait();
       })();
     </script>
   </body>

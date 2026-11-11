@@ -26,9 +26,7 @@ const lists = [
 <Base
   title={data.title}
   description={data.summary}
-  heavyTitle={false}
-  skyClass="sky--bare"
-  mainStyle={`--lead-ratio: ${(lead.src.width / lead.src.height).toFixed(4)}`}
+  hero={{ title: data.title, plain: true }}
 >
   <article class="page project wrap">
     <div class:list={['project-lead', { pixel: lead.pixel }]}>
@@ -45,9 +43,8 @@ const lists = [
     </div>
 
     <header class="project-head">
-      <h1 set:html={data.title.replaceAll('_', '_<wbr>')} />
       <p class="lead">{data.summary}</p>
-      <ProjectActions project={project} writeUp={false} />
+      <ProjectActions project={project} details={false} />
     </header>
 
     <div class="project-body">

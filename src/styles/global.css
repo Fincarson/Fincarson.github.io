@@ -260,7 +260,8 @@ main:focus {
 }
 
 /* Header: a plain solid rectangle in the sky's top colour, so at the top of the
-   page it joins the hero without a seam. It sticks. */
+   page it joins the hero without a seam. It sticks. Its text is white on that
+   colour, so it is always large text: bold and at least 18.66 px. */
 .site-header {
   position: sticky;
   top: 0;
@@ -269,11 +270,12 @@ main:focus {
   color: var(--sky-ink);
 }
 /* Links in the centre, the language button and the theme toggle at the right.
-   The empty ::before balances the tools; on narrow screens it shrinks to nothing. */
+   The empty ::before balances the tools. */
 .site-header .wrap {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--space-8);
   height: var(--header-h);
 }
 .site-header .wrap::before {
@@ -284,7 +286,6 @@ main:focus {
   flex: 1 1 0;
   display: flex;
   justify-content: flex-end;
-  padding-left: var(--space-8);
 }
 .site-header nav ul {
   display: flex;
@@ -298,6 +299,7 @@ main:focus {
   align-items: center;
   min-height: var(--tap);
   color: inherit;
+  font-size: var(--text-sky);
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
@@ -317,7 +319,7 @@ main:focus {
   border: 0;
   background: none;
   color: inherit;
-  font: 700 var(--text-s) / 1 var(--font-body);
+  font: 700 var(--text-sky) / 1 var(--font-body);
   cursor: pointer;
   transition: background-color var(--duration) var(--ease);
 }
@@ -385,49 +387,168 @@ main:focus {
   outline-offset: -3px;
 }
 
-/* The sky: the top of every page. The text sits on the solid
-   top colour, so its contrast never depends on the gradient. Below it, ::after
-   is the fade: a wide, shallow ellipse anchored at the top centre whose eased
-   stops (tokens.css) run from that colour to the page colour. Its first stop is
-   past the ellipse's reach at the top corners, so no edge shows. */
-.sky {
-  --sky-fade-h: clamp(8rem, 14vw, 11rem);
-  --sky-pad: var(--space-64);
-  position: relative;
-  background: var(--sky-zenith);
-  color: var(--sky-ink);
+/* Phone menu. Below 48em the menu button replaces the row of links and opens a
+   sidebar: a modal <dialog>, so the browser keeps focus inside it, makes the
+   page behind inert, closes it on Escape and returns focus to the button. The
+   button only shows once the script has run (html.js); without it the links stay. */
+.menu-button {
+  display: none;
+  /* The icon, not the button's box, lines up with the page gutter. */
+  margin-left: calc((var(--tap) - 1.25rem) / -2);
 }
+.menu {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(18rem, 86vw);
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--ink);
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition:
+    transform var(--slide) var(--ease),
+    overlay var(--slide) allow-discrete,
+    display var(--slide) allow-discrete;
+}
+.menu[open] {
+  transform: none;
+}
+.menu::backdrop {
+  background: rgb(0 20 40 / 0.55);
+  opacity: 0;
+  transition:
+    opacity var(--slide) var(--ease),
+    overlay var(--slide) allow-discrete,
+    display var(--slide) allow-discrete;
+}
+.menu[open]::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  .menu[open] {
+    transform: translateX(-100%);
+  }
+  .menu[open]::backdrop {
+    opacity: 0;
+  }
+}
+.menu-panel {
+  min-height: 100%;
+  padding: 0 var(--gutter) var(--space-24);
+}
+/* The close button sits exactly where the menu button was. */
+.menu-top {
+  display: flex;
+  align-items: center;
+  height: var(--header-h);
+}
+.menu .tool {
+  margin-left: calc((var(--tap) - 1.25rem) / -2);
+}
+.menu .tool:hover {
+  background: var(--surface);
+}
+.menu ul {
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+.menu a {
+  display: flex;
+  align-items: center;
+  min-height: 3.5rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  font-size: var(--text-l);
+  font-weight: 700;
+  text-decoration: none;
+}
+.menu a:hover,
+.menu [aria-current] {
+  color: var(--link);
+  text-decoration: underline;
+}
+.menu :focus-visible {
+  outline-offset: -3px;
+}
+
+/* The sky: the top of every page. One straight vertical gradient. The text
+   sits on the solid top colour; the fade fills the last --sky-fade-h of the
+   box and runs through the theme's eleven stops (tokens.css) to the page
+   colour. It changes from its first pixel and never stops, so no band shows. */
+.sky {
+  --sky-fade-h: 9rem;
+  --sky-pad: var(--space-48);
+  --f: var(--sky-fade-h);
+  position: relative;
+  color: var(--sky-ink);
+  background: linear-gradient(
+    to bottom,
+    var(--sky-zenith) calc(100% - var(--f)),
+    var(--sky-1) calc(100% - var(--f) * 0.9375),
+    var(--sky-2) calc(100% - var(--f) * 0.875),
+    var(--sky-3) calc(100% - var(--f) * 0.75),
+    var(--sky-4) calc(100% - var(--f) * 0.625),
+    var(--sky-5) calc(100% - var(--f) * 0.5),
+    var(--sky-6) calc(100% - var(--f) * 0.375),
+    var(--sky-7) calc(100% - var(--f) * 0.25),
+    var(--sky-8) calc(100% - var(--f) * 0.125),
+    var(--sky-9) calc(100% - var(--f) * 0.09375),
+    var(--sky-10) calc(100% - var(--f) * 0.0625),
+    var(--sky-11) calc(100% - var(--f) * 0.03125),
+    var(--bg) 100%
+  );
+}
+/* The room the fade takes below the text. */
 .sky::after {
   content: '';
   display: block;
   height: var(--sky-fade-h);
-  background: radial-gradient(ellipse 150% 100% at 50% 0, var(--sky-stops));
 }
 .sky > .wrap {
   position: relative;
   z-index: 1;
-  padding-block: var(--sky-pad) var(--space-16);
+  padding-top: var(--sky-pad);
 }
 .sky p {
   margin: 0;
+  max-width: none;
 }
-/* Page titles: "PROJECTS", "ABOUT". Clearly smaller than the name. */
+/* The page hero: every page but the Overview. The box has one fixed height, so
+   the hero is the same on every page and the title and subtitle never move. */
+.page-hero {
+  height: var(--hero-h);
+}
+/* Page titles: "PROJECTS", "ABOUT", a project's name. Always one line, in a
+   box as tall as one line of the full size. A title too long for the screen
+   shrinks to fit (0.54em is a wide allowance per character) and stays on the
+   box's bottom edge, so what follows never moves. */
 .page-title {
+  display: flex;
+  align-items: flex-end;
+  height: calc(var(--text-title) * 0.9);
   margin: 0;
   font-weight: 900;
-  font-size: var(--text-title);
+  font-size: min(var(--text-title), calc((100vw - 2 * var(--gutter)) / (var(--chars, 8) * 0.54)));
   line-height: 0.9;
   letter-spacing: 0.01em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
-/* The 404 title: a sentence, so in its own case. */
-.page-title--long {
-  font-weight: 700;
-  line-height: var(--leading-heading);
-  letter-spacing: var(--tracking-display);
+/* A project's name keeps its own spelling. */
+.page-title--plain {
   text-transform: none;
 }
-.sky .page-sub {
+/* White on the sky: large text, bold. */
+.page-sub {
   margin-top: var(--space-12);
   font-size: var(--text-l);
   font-weight: 700;
@@ -435,41 +556,42 @@ main:focus {
 }
 /* Overview: the name, the only giant title on the site, over a longer fade. */
 .sky--hero {
-  --sky-fade-h: clamp(12rem, 22vw, 17rem);
+  --sky-fade-h: clamp(15rem, 31vw, 28rem);
+  --sky-pad: var(--space-64);
 }
 .hero {
+  padding-bottom: var(--space-16);
   text-align: center;
 }
 .hero .page-title {
+  display: block;
+  height: auto;
+  white-space: normal;
   font-size: var(--text-name);
   line-height: var(--leading-name);
   letter-spacing: 0.005em;
+  text-wrap: balance;
 }
 /* The name takes two lines on phones and one from 56em. */
 .hero .page-title span {
   display: block;
 }
-.hero p {
-  max-width: none;
-}
 .hero .page-sub {
   margin-top: var(--space-24);
+  font-size: var(--text-xl);
 }
-/* Project pages: no text on the sky. It is just tall enough for the top half of
-   the picture, which straddles the end of the fade. */
-main {
-  --lead-w: min(100vw - 2 * var(--gutter), 36rem);
-  --lead-h: calc(var(--lead-w) / var(--lead-ratio, 2));
-}
-.sky--bare {
-  --sky-fade-h: calc(var(--lead-h) / 2 + var(--space-48));
+/* Regular weight on the sky, so 24 px. */
+.hero .motto {
+  font-size: var(--text-xl);
+  line-height: 1.4;
+  text-wrap: balance;
 }
 
-/* Sky art: clouds at the two sides and a few doves by day, stars by
-   night. Static. Everything sits in places the text never reaches: the fade
-   below the text block (.art-fade, masked so the art dissolves with the sky),
-   the strip between the header and the title, and the page margins outside the
-   wrapper. Sizes are fluid, and the smaller pieces only appear on wider screens. */
+/* Sky art: clouds at the two sides and a few doves by day, stars by night.
+   Everything sits in places the text never reaches: the fade below the text
+   (.art-fade, masked so the art dissolves with the sky), the strip between the
+   header and the title, and the page margins outside the wrapper. Sizes are
+   fluid, and the smaller pieces only appear on wider screens. */
 .sky-art {
   position: absolute;
   inset: 0;
@@ -570,27 +692,44 @@ main {
   bottom: auto;
   height: calc(var(--sky-pad) - 1.25rem);
 }
-.sky--bare .stars-top,
+/* The name's tall capitals reach higher than a page title, so its strip is shorter. */
+.sky--hero .stars-top {
+  height: calc(var(--sky-pad) - 2.5rem);
+}
 .stars-side {
   display: none !important;
 }
-/* Project pages: the picture fills the middle, so the art keeps to the strip
-   above it on phones and to the room beside it on wider screens. */
-.sky--bare .c-l1 {
-  top: 3%;
-  width: 5.5rem;
+/* The shooting star: a thin tapered streak that crosses part of the fade, below
+   the text, in the night sky only. The script gives it a new place (--x, --y)
+   and restarts the animation every 8 to 15 seconds. Transform and opacity only. */
+.sky-art .shooting {
+  left: var(--x, 20%);
+  top: var(--y, 10%);
+  width: clamp(4.5rem, 12vw, 8rem);
+  height: 2px;
+  opacity: 0;
 }
-.sky--bare .c-r1 {
-  top: 8%;
-  width: 6rem;
+.shooting.go {
+  animation: shoot 1100ms linear;
 }
-.sky--bare .d1 {
-  left: 45%;
-  top: 5%;
-  width: 1.375rem;
+@keyframes shoot {
+  0% {
+    opacity: 0;
+    transform: rotate(16deg) translateX(0);
+  }
+  15%,
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(16deg) translateX(clamp(8rem, 28vw, 20rem));
+  }
 }
-.sky--bare .d3 {
-  display: none;
+@media (prefers-reduced-motion: reduce) {
+  .sky-art .shooting {
+    display: none !important;
+  }
 }
 
 /* Content below the sky */
@@ -607,26 +746,6 @@ main {
 .column > * {
   max-width: var(--measure);
 }
-
-/* Overview: featured projects. Text left, picture right; on phones the picture comes first. */
-.feature {
-  display: grid;
-  gap: var(--space-24);
-  margin-top: var(--space-48);
-}
-.feature + .feature {
-  margin-top: var(--space-64);
-}
-.feature h3 {
-  font-size: var(--text-3xl);
-  overflow-wrap: anywhere;
-}
-.feature-media {
-  order: -1;
-}
-.feature-media img {
-  width: 100%;
-}
 .points {
   padding-left: var(--space-24);
 }
@@ -634,7 +753,8 @@ main {
   margin-top: var(--space-4);
 }
 
-/* Projects: cards. Each row shares a height and the buttons sit on its bottom edge. */
+/* Project cards, on Projects and Overview. Each row shares a height and the
+   buttons sit on its bottom edge. */
 .cards {
   display: grid;
   gap: var(--space-32);
@@ -642,6 +762,9 @@ main {
   padding: 0;
   max-width: none;
   list-style: none;
+}
+h2 + .cards {
+  margin-top: var(--space-24);
 }
 .card {
   display: flex;
@@ -666,7 +789,7 @@ main {
   flex-direction: column;
   padding: var(--space-24);
 }
-.card h2 {
+.card-title {
   font-size: var(--text-2xl);
   overflow-wrap: anywhere;
 }
@@ -688,6 +811,7 @@ main {
 .about {
   display: grid;
   gap: var(--space-32);
+  margin-top: var(--space-32);
 }
 .portrait {
   order: -1;
@@ -710,13 +834,11 @@ main {
   display: block;
 }
 
-/* Project page: the picture, half on the sky; then the title, the one-line
-   description and the buttons, centred; then the bulleted sections. */
+/* Project page: the picture, then the one-line description and the buttons,
+   centred; then the sections. The title is in the hero. */
 .project-lead {
-  position: relative;
-  width: var(--lead-w);
-  max-width: 100%;
-  margin: calc(var(--lead-h) / -2) auto 0;
+  width: min(100%, 36rem);
+  margin: var(--space-16) auto 0;
 }
 .project-lead img {
   width: 100%;
@@ -727,9 +849,6 @@ main {
 .project-head {
   margin-top: var(--space-32);
   text-align: center;
-}
-.project-head h1 {
-  overflow-wrap: anywhere;
 }
 .project-head p {
   margin-inline: auto;
@@ -748,8 +867,8 @@ main {
 .project-body h2:first-child {
   margin-top: 0;
 }
-/* Both edges of the text line up (Vincent, 2026-11-12). Hyphenation keeps the
-   word spacing even; headings stay left-aligned. */
+/* Both edges of the text line up. Hyphenation keeps the word spacing even;
+   headings stay left-aligned. */
 .project-body p,
 .project-body li {
   text-align: justify;
@@ -761,32 +880,36 @@ main {
   font-variant-numeric: tabular-nums;
 }
 
-/* Footer: the opposite blue, rising out of the page with the sky's fade turned
-   over. The text sits on the solid colour below the fade. */
+/* Footer: the opposite blue, rising out of the page in a short straight fade
+   (the eased stops in tokens.css). The text sits on the solid colour below it. */
 .site-footer {
-  margin-top: var(--space-64);
+  margin-top: var(--space-48);
   background: var(--footer-bg);
   color: var(--footer-ink);
 }
 .site-footer::before {
   content: '';
   display: block;
-  height: clamp(8rem, 16vw, 13rem);
-  background: radial-gradient(ellipse 150% 100% at 50% 100%, var(--footer-stops));
+  height: clamp(4.5rem, 8vw, 6.5rem);
+  background: linear-gradient(to bottom, var(--footer-stops));
 }
 .site-footer .wrap {
-  padding-block: var(--space-16) var(--space-32);
+  padding-block: var(--space-8) var(--space-24);
 }
 .footer-cols {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 12rem));
   gap: var(--space-32);
-  margin-bottom: var(--space-24);
+  margin-bottom: var(--space-16);
 }
+/* Column titles are labels, not links: small capitals over a divider line. */
 .site-footer h2 {
-  margin: 0;
-  font: 700 var(--text-base) / var(--leading-body) var(--font-body);
-  letter-spacing: 0;
+  margin: 0 0 var(--space-4);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid rgb(255 255 255 / 0.5);
+  font: 700 var(--text-s) / 1.4 var(--font-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .site-footer ul {
   margin: 0;
@@ -808,26 +931,35 @@ main {
   font-size: var(--text-s);
 }
 
-/* The narrowest phones: tighter header so links and tools share one 56 px row. */
-@media (max-width: 22.49em) {
-  .site-header .wrap {
-    padding-inline: var(--space-8);
-  }
-  .site-header nav ul {
-    gap: var(--space-8);
-  }
-  .site-header nav a {
-    font-size: 1rem;
-  }
-}
-
 @media (min-width: 30em) {
   .site-header nav ul {
     gap: var(--space-32);
   }
 }
 
+/* Phones: the menu button at the left, the tools at the right. */
+@media (max-width: 47.99em) {
+  .js .site-header nav {
+    display: none;
+  }
+  .js .menu-button {
+    display: inline-flex;
+  }
+  .js .site-header .wrap {
+    justify-content: space-between;
+  }
+  .js .site-header .wrap::before {
+    content: none;
+  }
+  .js .header-tools {
+    flex: none;
+  }
+}
+
 @media (min-width: 48em) {
+  .sky:not(.sky--hero) {
+    --sky-fade-h: 11rem;
+  }
   .cards {
     grid-template-columns: 1fr 1fr;
   }
@@ -838,62 +970,18 @@ main {
   .d4 {
     display: block;
   }
-  /* Beside the picture: positions are measured out from its two edges. */
-  .sky--bare {
-    --beside: calc(50% - var(--lead-w) / 2);
-  }
-  .sky--bare .c-l1 {
-    top: 26%;
-    width: clamp(6.5rem, 17vw, 17rem);
-  }
-  .sky--bare .c-r1 {
-    top: 38%;
-    width: clamp(7rem, 19vw, 19rem);
-  }
-  .sky--bare .c-l2 {
-    left: calc(var(--beside) - 15rem);
-    top: 5%;
-  }
-  .sky--bare .c-r2 {
-    right: calc(var(--beside) - 17rem);
-    top: 16%;
-  }
-  .sky--bare .d1 {
-    left: calc(var(--beside) - 5.5rem);
-    top: 20%;
-    width: clamp(1.5rem, 3vw, 2.75rem);
-  }
-  .sky--bare .d2 {
-    left: calc(var(--beside) - 9.5rem);
-    top: 44%;
-  }
-  .sky--bare .d3 {
-    display: block;
-    right: calc(var(--beside) - 5rem);
-    top: 30%;
-  }
-  .sky--bare .d4 {
-    right: calc(var(--beside) - 8.5rem);
-    top: 9%;
-  }
 }
 
 @media (min-width: 56em) {
-  .sky .page-sub {
+  .page-sub {
     font-size: var(--text-xl);
   }
-  /* Titles sit a little lower in the short heroes on wide screens. */
-  .sky {
-    --sky-pad: var(--space-96);
-  }
-  .sky--hero {
+  /* Titles sit a little lower on wide screens. */
+  .sky:not(.sky--hero) {
     --sky-pad: var(--space-64);
   }
   .d5 {
     display: block;
-  }
-  .sky--bare .d5 {
-    display: none;
   }
   .hero .page-title span {
     display: inline;
@@ -902,35 +990,25 @@ main {
     grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
     column-gap: var(--space-64);
     align-items: start;
+    margin-top: var(--space-48);
   }
   .portrait {
     order: 0;
     width: auto;
   }
-  .feature {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    column-gap: var(--space-48);
-    align-items: center;
-  }
-  .feature + .feature {
-    margin-top: var(--space-96);
-  }
-  .feature-media {
-    order: 0;
-  }
 }
 
-/* Wide screens: stars also fill the page margins beside the wrapper. */
+/* Wide screens: a longer fade, and stars also fill the page margins beside the wrapper. */
 @media (min-width: 80em) {
+  .sky:not(.sky--hero) {
+    --sky-fade-h: 12rem;
+  }
   [data-theme='dark'] .stars-side {
     display: block !important;
     top: 0;
     bottom: var(--sky-fade-h);
     width: calc((100% - var(--wrap)) / 2 + var(--gutter) - 1.5rem);
     height: auto;
-  }
-  [data-theme='dark'] .sky--bare .stars-side {
-    display: none !important;
   }
   .stars-l {
     right: auto;

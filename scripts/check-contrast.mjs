@@ -15,6 +15,7 @@ const dark = { ...light, ...read(darkCss) };
 const themes = { light, dark };
 
 // Targets: 7 body text (AAA), 4.5 other text (AA), 3 large text and UI parts.
+// Text on the sky and the header is large text (24 px, or 18.66 px bold) by design.
 // [label, foreground token, background token, minimum ratio, themes]
 const both = ['light', 'dark'];
 const spec = [
@@ -42,8 +43,8 @@ const spec = [
   ['selection text on brand', 'selection-ink', 'brand', 4.5, both],
   ['focus ring on bg', 'focus', 'bg', 3, both],
   ['focus ring on surface', 'focus', 'surface', 3, both],
-  ['sky text on the zenith (header, titles: all sky text sits on it)', 'sky-ink', 'sky-zenith', 4.5, both],
-  ['header control hover ground', 'sky-ink', 'sky-mid', 4.5, both],
+  ['sky text on the zenith (header, titles: large text only)', 'sky-ink', 'sky-zenith', 3, both],
+  ['header control hover ground (large text only)', 'sky-ink', 'sky-mid', 3, both],
   ['language menu tick on bg', 'link', 'bg', 3, both],
   ['footer text on the footer ground', 'footer-ink', 'footer-bg', 4.5, both],
 ];
