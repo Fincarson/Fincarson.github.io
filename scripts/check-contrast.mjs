@@ -47,8 +47,6 @@ const spec = [
   ['header control hover ground (large text only)', 'sky-ink', 'sky-mid', 3, both],
   ['language menu tick on bg', 'link', 'bg', 3, both],
   ['footer text on the footer ground', 'footer-ink', 'footer-bg', 4.5, both],
-  ['slideshow caption and buttons', 'slide-ink', 'slide-bg', 4.5, both],
-  ['slideshow buttons, hover', 'slide-ink', 'slide-bg-hover', 4.5, both],
 ];
 const pairs = spec.flatMap(([label, fg, bg, min, on]) =>
   on.map((theme) => {

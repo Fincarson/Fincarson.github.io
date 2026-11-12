@@ -65,12 +65,6 @@
     #fdfdfe 0%, #f3f9fe 8.33%, #d9eefd 16.67%, #b4ddfa 25%, #8bc8f2 33.33%, #62afe4 41.67%, #3f94cf 50%, #2479b5 58.33%,
     #115f97 66.67%, #064778 75%, #01345c 83.33%, #002848 91.67%, #002341 100%;
 
-  /* The slideshow: the ground behind a picture, its caption band and its
-     buttons. The same in both themes, since it sits on photos. */
-  --slide-bg: #0f171f;
-  --slide-bg-hover: #26313b;
-  --slide-ink: #ffffff;
-
   /* Type */
   --font-display: 'Big Shoulders Display', 'Big Shoulders Display Fallback', 'Arial Narrow', sans-serif;
   --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible Next Fallback', system-ui, sans-serif;
@@ -117,12 +111,13 @@
   --focus-ring: 3px solid var(--focus);
   --focus-offset: 3px;
 
-  /* Motion: hover and focus, and the phone menu sliding in */
+  /* Motion: hover and focus, the phone menu sliding in, and the entrance
+     of a section the first time it appears. */
   --duration: 160ms;
   --slide: 240ms;
-  /* The slideshow's crossfade. */
-  --fade: 600ms;
+  --enter: 500ms;
   --ease: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (min-width: 48em) {
@@ -191,6 +186,5 @@
   :root {
     --duration: 0ms;
     --slide: 0ms;
-    --fade: 0ms;
   }
 }

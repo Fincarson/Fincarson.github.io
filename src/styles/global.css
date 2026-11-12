@@ -757,7 +757,7 @@ main:focus {
   border-top: 1px solid var(--rule);
 }
 .page > .section:first-child,
-.project-head + .section {
+.project-top + .section {
   padding-top: 0;
   border-top: 0;
 }
@@ -775,6 +775,7 @@ main:focus {
 }
 .card p,
 .roles li,
+.roles p,
 .entry-meta,
 .entry-links li,
 .actions li,
@@ -786,111 +787,49 @@ main:focus {
   text-align: center;
 }
 
-/* The slideshow on the Overview: one frame of fixed shape, the photos stacked
-   in it. The current one is opaque; a change is a crossfade in place. The
-   caption is white on a solid band, and the buttons are solid squares, so both
-   read on any photo. */
-.slideshow {
-  position: relative;
+/* The entrance. The first time a page is opened in a browser session, each
+   block of the content area fades up into place once: straight away when it
+   is on screen, otherwise when it scrolls into view. On the Overview the name
+   does the same, then the two lines under it. The class on <html> is set
+   before the first paint and only then, so without scripts, on a return or a
+   reload, with reduced motion and in print nothing is ever hidden. Opacity
+   and transform only: no box changes size or place.
+   A waiting block sits at 1% opacity, which the eye cannot see, and the fade
+   starts there: a browser times a page's largest paint from the first frame
+   in which that content is not fully transparent. */
+.enter .page > * {
+  opacity: 0.01;
 }
-.slides {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: var(--slide-bg);
-}
-.slide {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity var(--fade) linear,
-    visibility 0s linear var(--fade);
-}
-.slide.is-current {
+.enter .page > .in {
   opacity: 1;
-  visibility: visible;
-  transition: opacity var(--fade) linear;
+  animation: rise var(--enter) var(--ease-out) var(--d, 0ms) backwards;
 }
-/* The other photos are not fetched until the page has loaded. */
-.slideshow:not(.is-ready) .slide:not(.is-current) {
-  display: none;
+/* Reached by a jump link or by keyboard focus: shown at once. */
+.enter .page > .now {
+  animation: none;
 }
-.slide picture {
-  display: block;
-  height: 100%;
+.enter .hero .page-title {
+  animation: rise var(--enter) var(--ease-out) backwards;
 }
-.slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.enter .hero p {
+  animation: rise var(--enter) var(--ease-out) 120ms backwards;
 }
-/* A cover with words is shown whole, at the top of the frame. */
-.slide--whole img {
-  object-fit: contain;
-  object-position: 50% 0;
+@keyframes rise {
+  from {
+    opacity: 0.01;
+    transform: translateY(var(--space-16));
+  }
 }
-.slide figcaption {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  max-width: min(100%, 46rem);
-  padding: var(--space-8) var(--space-16);
-  background: var(--slide-bg);
-  color: var(--slide-ink);
-  font-size: var(--text-s);
-  line-height: 1.4;
-}
-.slide-btn {
-  position: absolute;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--tap);
-  height: var(--tap);
-  padding: 0;
-  border: 0;
-  background: var(--slide-bg);
-  color: var(--slide-ink);
-  cursor: pointer;
-  transition: background-color var(--duration) var(--ease);
-}
-.slide-btn[hidden] {
-  display: none;
-}
-.slide-btn:hover {
-  background: var(--slide-bg-hover);
-}
-.slide-btn:focus-visible {
-  outline-color: var(--slide-ink);
-  outline-offset: -3px;
-}
-.slide-btn svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-.slide-prev,
-.slide-next {
-  top: calc(50% - var(--tap) / 2);
-}
-.slide-prev {
-  left: 0;
-}
-.slide-next,
-.slide-pause {
-  right: 0;
-}
-.slide-pause {
-  top: 0;
-}
-.icon-play,
-.is-paused .icon-pause {
-  display: none;
-}
-.is-paused .icon-play {
-  display: block;
+@media print, (prefers-reduced-motion: reduce) {
+  .enter .page > *,
+  .enter .page > .in {
+    opacity: 1;
+    animation: none;
+  }
+  .enter .hero .page-title,
+  .enter .hero p {
+    animation: none;
+  }
 }
 .lead {
   font-size: var(--text-l);
@@ -994,7 +933,8 @@ ol.points {
   width: 100%;
 }
 
-/* Overview: the roles held now and the schools, one line each. */
+/* Overview: what I work with, the roles held now, the awards and the
+   schools, one line each. A role has one short line under it. */
 .roles {
   margin-bottom: 0;
   padding: 0;
@@ -1002,6 +942,12 @@ ol.points {
 }
 .roles li + li {
   margin-top: var(--space-8);
+}
+.roles p {
+  margin: 0;
+}
+.roles--notes li + li {
+  margin-top: var(--space-16);
 }
 
 /* Experience: each group is a list of entries, 32 px apart. An entry is its
@@ -1210,12 +1156,6 @@ ol.points {
 @media (min-width: 48em) {
   .cards {
     grid-template-columns: 1fr 1fr;
-  }
-  .slides {
-    aspect-ratio: 16 / 9;
-  }
-  .slide figcaption {
-    font-size: var(--text-base);
   }
   .entry--photo {
     grid-template-columns: minmax(0, 1fr) 15rem;

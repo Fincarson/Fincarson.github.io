@@ -56,12 +56,25 @@ function stars(seed: number, count: number) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Marks that scripts run, and applies the saved theme before first paint. The choice never leaves the browser. -->
+    <!-- Marks that scripts run, and applies the saved theme before first paint. The choice never leaves the browser.
+         Then the entrance: only the first time this page is opened in this browser session, and never when
+         reduced motion is asked for. Set before the first paint, so nothing shows and then hides. -->
     <script is:inline>
-      document.documentElement.classList.add('js');
-      try {
-        if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';
-      } catch {}
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        try {
+          if (localStorage.getItem('theme') === 'dark') root.dataset.theme = 'dark';
+        } catch {}
+        let seen = false;
+        try {
+          const paths = (sessionStorage.getItem('seen') || '').split('\n');
+          seen = paths.includes(location.pathname);
+          if (!seen) sessionStorage.setItem('seen', paths.concat(location.pathname).join('\n'));
+        } catch {}
+        if (!seen && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+          root.classList.add('enter');
+      })();
     </script>
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
@@ -227,6 +240,46 @@ function stars(seed: number, count: number) {
       </div>
       <slot />
     </main>
+    <script is:inline>
+      // The entrance: each block of the content area fades up once. Blocks on screen now go
+      // straight away, top first, 80 ms apart; the others when about 15% of them is in view
+      // (a block taller than the window: a quarter of the window). A block that a jump link
+      // or keyboard focus reaches is shown at once.
+      (() => {
+        if (!document.documentElement.classList.contains('enter')) return;
+        const now = (el) => el && el.classList.add('in', 'now');
+        let onScreen = 0;
+        for (const el of document.querySelectorAll('.page > *')) {
+          const r = el.getBoundingClientRect();
+          const need = Math.min(r.height * 0.15, innerHeight * 0.25);
+          if (r.bottom <= 0) now(el);
+          else if (Math.min(r.bottom, innerHeight) - Math.max(r.top, 0) >= need) {
+            el.style.setProperty('--d', `${80 * onScreen++}ms`);
+            el.classList.add('in');
+          } else {
+            const share = r.height ? need / r.height : 0;
+            const io = new IntersectionObserver(
+              ([e]) => {
+                if (e.intersectionRatio < share * 0.98) return;
+                el.classList.add('in');
+                io.disconnect();
+              },
+              { threshold: share },
+            );
+            io.observe(el);
+          }
+        }
+        const reach = (node) => node && node.closest && now(node.closest('.page > :not(.in)'));
+        const jump = () => {
+          try {
+            reach(document.getElementById(decodeURIComponent(location.hash.slice(1))));
+          } catch {}
+        };
+        document.addEventListener('focusin', (e) => reach(e.target));
+        addEventListener('hashchange', jump);
+        jump();
+      })();
+    </script>
     <footer class="site-footer">
       <div class="wrap">
         <div class="footer-cols">

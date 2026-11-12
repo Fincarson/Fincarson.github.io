@@ -231,14 +231,31 @@ export const groups: Group[] = [
 /** The line under an entry's title. */
 export const meta = (entry: Entry) => [entry.org, entry.place, entry.dates].filter(Boolean).join(', ');
 
-/** The roles held now, for the Overview. */
-export const currentRoles = groups[0]!.entries.filter((e) => e.dates?.endsWith('to present'));
-
-/** The schools, one line each, for the Overview. */
-export const schools = [
-  {
-    name: 'National Tsing Hua University (NTHU)',
-    rest: "Bachelor's degree in Computer Science, 2024 to 2028, GPA 4.1/4.3",
-  },
-  { name: 'SMAK 2 BPK PENABUR Bandung', rest: 'high school, 2021 to 2024' },
-];
+/** The Overview's summary: the roles held now, two awards and the schools.
+ *  Each line is a name in bold and the rest after it; a role has one short
+ *  line under it. The full entries are above. */
+export const overview = {
+  roles: [
+    {
+      name: 'Teaching Assistant',
+      rest: 'NTHU, Sep 2026 to present',
+      note: 'Sole TA for a general education course with 69 students.',
+    },
+    {
+      name: 'Strategic Planner, Incoming Global Talent team',
+      rest: 'AIESEC Hsinchu, Mar 2026 to present',
+      note: 'Plan targets and track progress for a team that places international interns at companies in Taiwan.',
+    },
+  ],
+  awards: [
+    { name: '1st place, Vibe Coding Youth Hackathon', rest: ' (Women in Tech Global and Newly), Oct 2026' },
+    { name: 'Taiwan Outstanding Scholarship', rest: ' (OCAC), 2024 to 2028' },
+  ],
+  schools: [
+    {
+      name: 'National Tsing Hua University (NTHU)',
+      rest: ", Bachelor's degree in Computer Science, 2024 to 2028",
+    },
+    { name: 'SMAK 2 BPK PENABUR Bandung', rest: ', high school, 2021 to 2024' },
+  ],
+};

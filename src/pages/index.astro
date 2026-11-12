@@ -1,8 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import Slideshow from '../components/Slideshow.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import { currentRoles, schools } from '../experience';
+import { overview } from '../experience';
 import { site } from '../site.config';
 import { getProjects } from '../projects';
 
@@ -18,20 +17,48 @@ const [given, family] = site.name.split(' ');
   </div>
 
   <div class="page wrap">
-    <Slideshow />
-
     <section class="section" aria-labelledby="about-me">
       <h2 id="about-me">About me</h2>
-      <p>{site.about}</p>
+      {site.about.map((paragraph) => <p>{paragraph}</p>)}
+    </section>
+
+    <section class="section" aria-labelledby="work-with">
+      <h2 id="work-with">What I work with</h2>
+      <ul class="roles">
+        {
+          site.workWith.map((group) => (
+            <li>
+              <strong>{group.label}:</strong> {group.items}
+            </li>
+          ))
+        }
+      </ul>
     </section>
 
     <section class="section" aria-labelledby="experience">
       <h2 id="experience">Experience</h2>
+      <ul class="roles roles--notes">
+        {
+          overview.roles.map((role) => (
+            <li>
+              <p>
+                <strong>{role.name}</strong>, {role.rest}
+              </p>
+              <p>{role.note}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="awards">
+      <h2 id="awards">Awards</h2>
       <ul class="roles">
         {
-          currentRoles.map((role) => (
+          overview.awards.map((award) => (
             <li>
-              <strong>{role.title}</strong>, {role.org}, {role.dates}
+              <strong>{award.name}</strong>
+              {award.rest}
             </li>
           ))
         }
@@ -55,9 +82,10 @@ const [given, family] = site.name.split(' ');
       <h2 id="education">Education</h2>
       <ul class="roles">
         {
-          schools.map((school) => (
+          overview.schools.map((school) => (
             <li>
-              <strong>{school.name}</strong>, {school.rest}
+              <strong>{school.name}</strong>
+              {school.rest}
             </li>
           ))
         }
