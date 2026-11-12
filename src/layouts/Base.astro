@@ -190,6 +190,11 @@ function stars(seed: number, count: number) {
     </dialog>
     <main id="main" tabindex="-1">
       <div class:list={['sky', { 'sky--hero': !hero }]}>
+        <!-- The text comes before the art in the markup, so a browser that paints while it is still
+             reading the page already has the hero at its full height. -->
+        <div class="wrap">
+          {hero ? <PageHero {...hero} /> : <slot name="sky" />}
+        </div>
         <!-- Sky art, drawn for this site: clouds and doves by day, stars and a shooting star by night.
              Decorative, and kept clear of the text (global.css). -->
         <div class="sky-art" aria-hidden="true">
@@ -233,9 +238,6 @@ function stars(seed: number, count: number) {
           </svg>
           <svg class="night stars stars-side stars-l">{stars(77, 8).map((star) => <circle {...star} />)}</svg>
           <svg class="night stars stars-side stars-r">{stars(91, 8).map((star) => <circle {...star} />)}</svg>
-        </div>
-        <div class="wrap">
-          {hero ? <PageHero {...hero} /> : <slot name="sky" />}
         </div>
       </div>
       <slot />
