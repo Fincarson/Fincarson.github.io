@@ -9,6 +9,8 @@
   --bg: #fdfdfe;
   --surface: #f2f5f9;
   --border: #d9dfe4;
+  /* The line at the start of a section. */
+  --rule: var(--border);
   --ink: #1a232b;
   --ink-muted: #4d5660;
   --ink-faint: #6a737c;
@@ -63,6 +65,12 @@
     #fdfdfe 0%, #f3f9fe 8.33%, #d9eefd 16.67%, #b4ddfa 25%, #8bc8f2 33.33%, #62afe4 41.67%, #3f94cf 50%, #2479b5 58.33%,
     #115f97 66.67%, #064778 75%, #01345c 83.33%, #002848 91.67%, #002341 100%;
 
+  /* The slideshow: the ground behind a picture, its caption band and its
+     buttons. The same in both themes, since it sits on photos. */
+  --slide-bg: #0f171f;
+  --slide-bg-hover: #26313b;
+  --slide-ink: #ffffff;
+
   /* Type */
   --font-display: 'Big Shoulders Display', 'Big Shoulders Display Fallback', 'Arial Narrow', sans-serif;
   --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible Next Fallback', system-ui, sans-serif;
@@ -96,6 +104,8 @@
   --wrap: 76rem;
   --gutter: clamp(1rem, 4vw, 3rem);
   --tap: 2.75rem;
+  /* The space above the line that starts a section. */
+  --section-gap: var(--space-48);
   --header-h: 3.5rem;
   /* The page hero: its text box (the title line and one subtitle line) and
      the height of the fade below it. */
@@ -110,11 +120,14 @@
   /* Motion: hover and focus, and the phone menu sliding in */
   --duration: 160ms;
   --slide: 240ms;
+  /* The slideshow's crossfade. */
+  --fade: 600ms;
   --ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @media (min-width: 48em) {
   :root {
+    --section-gap: var(--space-64);
     --hero-h: 7rem;
     --hero-fade: 11rem;
   }
@@ -144,6 +157,7 @@
   --bg: #0f171f;
   --surface: #1a232b;
   --border: #2b3640;
+  --rule: rgb(255 255 255 / 0.5);
   --ink: #e7ecf0;
   --ink-muted: #b8bfc5;
   --ink-faint: #b8bfc5;
@@ -166,10 +180,10 @@
   --sky-9: #0e1822;
   --sky-10: #0f1720;
   --sky-11: #0f171f;
-  --footer-bg: #0073d6;
+  /* The footer is the night sky's top colour. */
   --footer-stops:
-    #0f171f 0%, #0f1923 8.33%, #0e1e2c 16.67%, #0d253b 25%, #0b2f4e 33.33%, #0a3a64 41.67%, #08457a 50%, #065091 58.33%,
-    #045ba6 66.67%, #0265b9 75%, #016cc8 83.33%, #0071d2 91.67%, #0073d6 100%;
+    #0f171f 0%, #0f1720 8.33%, #0e1821 16.67%, #0d1924 25%, #0b1a28 33.33%, #091c2c 41.67%, #081d30 50%, #061e34 58.33%,
+    #042038 66.67%, #02213c 75%, #01223e 83.33%, #002340 91.67%, #002341 100%;
   --shadow-menu: 0 8px 16px rgb(0 0 0 / 0.5);
 }
 
@@ -177,5 +191,6 @@
   :root {
     --duration: 0ms;
     --slide: 0ms;
+    --fade: 0ms;
   }
 }

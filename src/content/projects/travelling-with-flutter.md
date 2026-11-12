@@ -6,8 +6,8 @@ end: "2026-06"
 featured: true
 summary: A collaborative trip planner in Flutter and Firebase, with an AI agent that plans and edits trips.
 about:
-  - Travelling with Flutter is an app for planning trips, alone or with a group. You create a trip, fill in the itinerary and invite friends as owners, editors or viewers. Everything is stored in Firestore, so changes show up for everyone in real time, on a phone, a tablet, a desktop or in a browser.
-  - A trip can have its own group chat, and the app has maps and place search. An AI agent chats, writes a full trip plan, edits a single day and suggests transport. It runs on the OpenAI API inside Firebase Cloud Functions, so no provider key ships inside the app.
+  - Travelling with Flutter is a group travel-planning app with shared trips, real-time group chat and trip memories. You create a trip, fill in the itinerary and invite friends as owners, editors or viewers. Everything is stored in Firestore, so changes show up for everyone in real time, on a phone, a tablet, a desktop or in a browser.
+  - AI-assisted planning and location search come from an agent we built ourselves on the OpenAI API. It chats, writes a full trip plan, edits a single day and suggests transport, and it runs through Firebase Cloud Functions, so no provider key ships inside the app. A trip can also have its own group chat, and the app has maps and place search.
 play:
   - "Create a trip and fill in its itinerary: days, activities, bookings, budget categories and checklists."
   - Invite friends as owner, editor or viewer.

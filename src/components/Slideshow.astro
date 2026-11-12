@@ -1,0 +1,174 @@
+---
+// The photo slideshow on the Overview. One fixed frame; the photos crossfade in
+// place, nothing slides. Without scripts only the first photo shows. The other
+// photos are fetched after the page has loaded.
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import flasheatCover from '../assets/projects/nthu-flasheat/cover.webp';
+import scholarship from '../assets/slides/scholarship-group-photo.webp';
+import forumPitch from '../assets/slides/youth-speak-forum-pitch.webp';
+import graduation from '../assets/slides/high-school-graduation.webp';
+
+interface Slide {
+  src: ImageMetadata;
+  alt: string;
+  caption: string;
+  /** Where the crop holds on to, so no face is cut off. */
+  focus?: string;
+  /** A cover with words: shown whole, never cropped. */
+  whole?: boolean;
+}
+
+// The first slide is the one most visitors see.
+const slides: Slide[] = [
+  {
+    src: flasheatCover,
+    alt: 'NTHU FlashEat cover. It reads: Order on the way to class. Grab & go in seconds. 1st Place, Vibe Coding Youth Hackathon 2026, Women in Tech × Newly · NTHU. Flatten the 12:00 peak. Below the words, a chart of five-minute pickup slots and an order ticket with a pickup code.',
+    caption: '1st place at the Vibe Coding Youth Hackathon, NTHU, October 2026',
+    whole: true,
+  },
+  {
+    src: scholarship,
+    alt: 'Ten people standing together in front of a wall painting of Chinese pavilions: scholarship recipients from West Java with two hosts.',
+    caption:
+      'Taiwan Outstanding Scholarship (OCAC): with fellow recipients from West Java before leaving for Taiwan, 2024',
+    focus: '50% 28%',
+  },
+  {
+    src: forumPitch,
+    alt: 'A delegate in a tan coat holds an open laptop and talks with two men wearing lanyards in a hotel conference room.',
+    caption: "Pitching our team's idea to an industry mentor, AIESEC National Youth Speak Forum, January 2026",
+    focus: '50% 42%',
+  },
+  {
+    src: graduation,
+    alt: 'Vincent Jefferson in a navy suit with a graduation medal, holding his diploma folder and shaking hands on stage.',
+    caption: 'Graduating from SMAK 2 BPK PENABUR Bandung, June 2024',
+    focus: '50% 8%',
+  },
+];
+---
+
+<section class="slideshow section" aria-roledescription="carousel" aria-label="Highlights">
+  <div class="slides" aria-live="off">
+    {
+      slides.map((slide, i) => (
+        <figure
+          class:list={['slide', { 'is-current': i === 0, 'slide--whole': slide.whole }]}
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${i + 1} of ${slides.length}`}
+        >
+          <Picture
+            src={slide.src}
+            alt={slide.alt}
+            formats={['avif']}
+            fallbackFormat="webp"
+            widths={[480, 800, 1280]}
+            sizes="(min-width: 76rem) 70rem, 100vw"
+            loading={i === 0 ? 'eager' : 'lazy'}
+            fetchpriority={i === 0 ? 'high' : undefined}
+            style={slide.focus && `object-position: ${slide.focus}`}
+          />
+          <figcaption>{slide.caption}</figcaption>
+        </figure>
+      ))
+    }
+  </div>
+  <!-- The controls are hidden until the script below runs: without it they could do nothing. -->
+  <button class="slide-btn slide-prev" type="button" aria-label="Previous photo" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" focusable="false">
+      <path d="M15 4l-8 8 8 8"></path>
+    </svg>
+  </button>
+  <button class="slide-btn slide-next" type="button" aria-label="Next photo" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" focusable="false">
+      <path d="M9 4l8 8-8 8"></path>
+    </svg>
+  </button>
+  <button class="slide-btn slide-pause" type="button" aria-label="Pause slideshow" hidden>
+    <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M6 4h4v16H6zM14 4h4v16h-4z"></path>
+    </svg>
+    <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M7 4l13 8-13 8z"></path>
+    </svg>
+  </button>
+</section>
+
+<script is:inline>
+  // Nothing happens until the page has loaded. Then the other photos are let in
+  // and the next one fades in every 6 to 7 seconds. It waits while the pointer
+  // is over it, while focus is inside it, while the tab is hidden and after the
+  // pause button; with reduced motion it never moves on its own.
+  addEventListener('load', () => {
+    const root = document.querySelector('.slideshow');
+    const slides = [...root.querySelectorAll('.slide')];
+    const live = root.querySelector('.slides');
+    const pause = root.querySelector('.slide-pause');
+    const still = matchMedia('(prefers-reduced-motion: reduce)');
+    let current = 0;
+    let timer;
+    let playing = true;
+    let hover = false;
+    let focus = false;
+
+    const schedule = () => {
+      clearTimeout(timer);
+      const auto = playing && !hover && !focus && !still.matches && !document.hidden;
+      // Changes made by the timer are not announced; the visitor's own are.
+      live.setAttribute('aria-live', auto ? 'off' : 'polite');
+      if (auto) timer = setTimeout(() => show(current + 1), 6000 + Math.random() * 1000);
+    };
+    const show = (n) => {
+      slides[current].classList.remove('is-current');
+      current = (n + slides.length) % slides.length;
+      slides[current].classList.add('is-current');
+      schedule();
+    };
+    const setPause = () => {
+      pause.hidden = still.matches;
+      pause.classList.toggle('is-paused', !playing);
+      pause.setAttribute('aria-label', playing ? 'Pause slideshow' : 'Play slideshow');
+    };
+
+    root.classList.add('is-ready');
+    root.querySelector('.slide-prev').hidden = false;
+    root.querySelector('.slide-next').hidden = false;
+    root.addEventListener('click', (e) => {
+      const button = e.target.closest('.slide-btn');
+      if (!button) return;
+      if (button === pause) {
+        playing = !playing;
+        setPause();
+        schedule();
+      } else show(current + (button.classList.contains('slide-next') ? 1 : -1));
+    });
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+    const hold = (e) => {
+      if (e.pointerType !== 'mouse') return;
+      hover = e.type === 'pointerenter';
+      schedule();
+    };
+    root.addEventListener('pointerenter', hold);
+    root.addEventListener('pointerleave', hold);
+    root.addEventListener('focusin', () => {
+      focus = true;
+      schedule();
+    });
+    root.addEventListener('focusout', (e) => {
+      focus = root.contains(e.relatedTarget);
+      schedule();
+    });
+    document.addEventListener('visibilitychange', schedule);
+    still.addEventListener('change', () => {
+      setPause();
+      schedule();
+    });
+    setPause();
+    schedule();
+  });
+</script>

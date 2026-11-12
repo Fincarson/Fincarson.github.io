@@ -4,11 +4,11 @@ slug: panda-tales
 start: "2024-08"
 end: "2024-12"
 featured: false
-summary: A small solo game in C with Allegro 5, inspired by Guardian Tales.
+summary: A 2.5D action game in C with Allegro 5, inspired by Guardian Tales.
 award: Favorite Game award
 about:
-  - Panda_Tales is a small game I made on my own for fun, inspired by Guardian Tales.
-  - Won the Favorite Game award at an indie game hackathon (2024).
+  - "Panda_Tales is a 2.5D action game in C with Allegro 5, inspired by Guardian Tales: you fight enemies, collect coins, buy weapons and beat the boss. I made it on my own for fun."
+  - It won the Favorite Game award at an indie game hackathon at NTHU (2024).
 built:
   - I wrote the game in C with the Allegro 5 library.
   - I built it with CMake.

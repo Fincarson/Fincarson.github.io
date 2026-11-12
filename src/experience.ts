@@ -11,13 +11,15 @@ import taCertificate from './assets/experience/certificates/ta-training-camp.web
 import forumCertificate from './assets/experience/certificates/youth-speak-forum.webp';
 
 export interface Entry {
-  /** The jump target: /experience/#id */
   id: string;
   title: string;
+  /** The line under the title: organisation, then place, then dates. */
   org?: string;
+  place?: string;
   dates?: string;
-  /** One to three short lines. */
-  lines?: string[];
+  /** One sentence before the bullets. */
+  lead?: string;
+  points?: string[];
   links?: { label: string; href: string }[];
   certificate?: ImageMetadata;
   photo?: { src: ImageMetadata; alt: string };
@@ -38,17 +40,39 @@ export const groups: Group[] = [
         id: 'teaching-assistant',
         title: 'Teaching Assistant',
         org: 'National Tsing Hua University (NTHU)',
+        place: 'Hsinchu',
         dates: 'Sep 2026 to present',
-        lines: [
-          'Sole TA for the general education course Classics in Literature: Selected Readings of Western Classical Poetry, 69 students.',
-          'Main contact between the international students and the instructor. I grade midterms, collect and organise homework, form the final presentation groups and keep attendance.',
+        lead: 'Sole TA for Classics in Literature: Selected Readings of Western Classical Poetry, a general education course with 69 students.',
+        points: [
+          'Main contact between international students and the professor on assignments, workload and course expectations',
+          'Grade the midterm exams, and collect and summarise individual and group homework',
+          'Form the final presentation teams and track attendance and leave requests',
+          "Point students to the slides, readings and course materials on the university's online learning platform",
         ],
       },
       {
         id: 'aiesec',
         title: 'Strategic Planner, Incoming Global Talent team',
         org: 'AIESEC Hsinchu (AIESEC in Taiwan)',
+        place: 'Hsinchu',
         dates: 'Mar 2026 to present',
+        lead: 'AIESEC Hsinchu is a local committee of about 50 students that places international young professionals in internships at companies in Taiwan.',
+        points: [
+          'Set team targets with department leadership and turn them into weekly and monthly action plans',
+          'Track progress on partnerships, open positions and intern placements, and report the results to leadership',
+          'Find what slows the team down, adjust the plans, and coach teammates through regular check-ins',
+        ],
+      },
+      {
+        id: 'class-representative-assembly',
+        title: 'Member, Class Representative Assembly',
+        org: 'SMAK 2 BPK PENABUR Bandung',
+        dates: 'Jul 2022 to Jun 2023',
+        points: [
+          'Represented my class in council meetings, bringing student concerns and suggestions',
+          "Reviewed the Student Council's programs and budget proposals",
+          'Helped plan and run school events with the Student Council',
+        ],
       },
     ],
   },
@@ -61,8 +85,9 @@ export const groups: Group[] = [
         title: '1st place, Vibe Coding Youth Hackathon',
         org: 'Women in Tech Global and Newly, at NTHU',
         dates: 'Oct 2026',
-        lines: [
-          'With NTHU FlashEat, a campus food pre-order app we built in one afternoon. Team "Katherine Johnson": Alicia Joely, Louise Davise and me.',
+        lead: 'Won as Team "Katherine Johnson" with Louise Davise and Alicia Joely. We built NTHU FlashEat, a campus cafeteria pre-order app, in one afternoon on Newly; I wrote every prompt the app was built from.',
+        points: [
+          'Part of the Global Vibe Coding Youth Tour, hosted at NTHU with NTHU EECS-GSA, NTHU IBPSA and the NTHU IBBA Student Association',
         ],
         links: [{ label: 'NTHU FlashEat project page', href: '/projects/nthu-flasheat/' }],
         certificate: hackathonCertificate,
@@ -70,37 +95,38 @@ export const groups: Group[] = [
       {
         id: 'favorite-game-award',
         title: 'Favorite Game award',
-        org: 'An indie game hackathon',
+        org: 'Indie game hackathon at NTHU',
         dates: '2024',
-        lines: ['For Panda_Tales.'],
+        lead: 'For Panda_Tales, a 2.5D action game I wrote in C with Allegro 5.',
         links: [{ label: 'Panda_Tales project page', href: '/projects/panda-tales/' }],
       },
       {
         id: 'taiwan-outstanding-scholarship',
         title: 'Taiwan Outstanding Scholarship',
         org: 'Overseas Community Affairs Council (OCAC)',
-        dates: '2024 to 2028',
-        lines: [
-          "For my bachelor's at NTHU. Awarded Aug 2024.",
-          'The certificate was presented by the West Java Chinese education coordinating board.',
-        ],
+        place: 'Taiwan',
+        dates: 'Aug 2024',
+        lead: "Awarded to pursue my bachelor's degree at NTHU, 2024 to 2028.",
+        points: ['Presented by the West Java Mandarin Education Coordinating Body (BKPBM Jabar) on 21 August 2024'],
         certificate: scholarshipCertificate,
         photo: {
           src: scholarshipPhoto,
-          alt: 'A group of ten people standing in front of a wall painting of Chinese pavilions, at the scholarship award.',
+          alt: 'With fellow recipients from West Java before leaving to study in Taiwan: ten people standing in front of a wall painting of Chinese pavilions.',
         },
       },
       {
         id: 'ui-ux-iot-competition',
         title: '4th Runner-Up, UI/UX Design for IoT Mobile Apps Competition',
-        org: 'Maranatha (Bisa Team)',
+        org: 'Universitas Kristen Maranatha',
         dates: 'Feb 2023',
+        lead: "With my team (Bisa Team), designed the user interface for a smart schooling IoT mobile app, in a competition run by the university's Industrial Engineering program.",
       },
       {
         id: 'iot-competition',
-        title: '5th Runner-Up, IoT Competition',
-        org: 'Maranatha',
+        title: '5th Runner-Up, Maranatha IoT Competition',
+        org: 'Universitas Kristen Maranatha',
         dates: 'Feb 2023',
+        lead: "Built an Arduino smart house with an automatic door and a gate that detects cars, in a competition run by the university's Electrical Engineering program.",
       },
     ],
   },
@@ -110,20 +136,26 @@ export const groups: Group[] = [
     entries: [
       {
         id: 'nthu',
-        title: 'Bachelor in Computer Science',
-        org: 'National Tsing Hua University (NTHU)',
-        dates: '2024 to 2028',
-        lines: [
-          'GPA 4.1/4.3.',
-          'Upcoming: undergraduate research with Prof. Chiu Te-Chuan on using large language models for security and resilience.',
+        title: 'National Tsing Hua University (NTHU)',
+        org: "Bachelor's degree, Computer Science",
+        dates: 'Sep 2024 to Jun 2028',
+        points: [
+          'GPA 4.1/4.3',
+          'Upcoming undergraduate research with Prof. Chiu Te-Chuan on applying large language models to security and resilience tasks',
+          'Relevant coursework: Computer Networks, Data Structures, Software Studio, Hardware Design and Lab, Computer Architecture, Logic Design, Probability, Linear Algebra, Discrete Mathematics, Introduction to Programming I and II, Programming in Python',
         ],
       },
       {
         id: 'high-school',
-        title: 'High school',
-        org: 'SMAK 2 BPK PENABUR Bandung',
-        dates: '2021 to 2024',
-        lines: ['Final score 91.19/100.', 'Class Representative Assembly member, Jul 2022 to Jun 2023.'],
+        title: 'SMAK 2 BPK PENABUR Bandung',
+        org: 'High school diploma',
+        dates: 'Jul 2021 to Jun 2024',
+        points: [
+          'Final grade 91.19/100',
+          '2LCB: a leadership, public speaking and communication program; organised events and served as MC with outside organisations',
+          'Project Next: built an HTML/CSS website and presented it to Maranatha officials',
+          "OSN Informatics: Indonesia's National Science Olympiad, in C++",
+        ],
         photo: {
           src: graduationPhoto,
           alt: 'Vincent Jefferson in a navy suit with a graduation medal, holding his diploma folder and shaking hands on stage at the SMAK 2 BPK PENABUR graduation in Bandung, 15 June 2024.',
@@ -137,9 +169,9 @@ export const groups: Group[] = [
     entries: [
       {
         id: 'citi',
-        title: 'Human Research, Data or Specimens Only Research, Basic Course',
-        org: 'CITI Program',
+        title: 'CITI Program: Human Research, Data or Specimens Only Research (Basic Course)',
         dates: 'Oct 2026, valid until Oct 2029',
+        lead: 'The basic course in human research ethics, under requirements set by MIT Affiliates.',
         links: [
           {
             label: 'Verify on CITI',
@@ -152,14 +184,27 @@ export const groups: Group[] = [
         title: 'Teaching Assistant Training Camp',
         org: 'NTHU Center for Teaching and Learning Development',
         dates: 'Aug 2026',
-        lines: ['9.5 hours.'],
+        lead: 'Two days, 25 to 26 August 2026, 9.5 hours. Topics:',
+        points: [
+          'TA ethics in the AI era',
+          'Experience from outstanding TAs and tutors',
+          'Presentation structure and logical expression',
+          'Gender equality in teaching',
+          'Communication, guidance and facilitation as a TA',
+          'English-medium instruction (EMI): TA roles, strategies and challenges',
+        ],
         certificate: taCertificate,
       },
       {
         id: 'youth-speak-forum',
         title: 'National Youth Speak Forum 2026, delegate',
-        org: 'AIESEC in Taiwan, Taipei',
+        org: 'AIESEC in Taiwan',
+        place: 'Taipei',
         dates: 'Jan 2026',
+        points: [
+          'In the workshop session, our team turned its idea into an app prototype with Google AI tools',
+          'We then talked the idea through with an industry mentor',
+        ],
         certificate: forumCertificate,
         photo: {
           src: forumPhoto,
@@ -169,28 +214,31 @@ export const groups: Group[] = [
     ],
   },
   {
-    id: 'languages',
-    title: 'Languages',
+    id: 'organizations',
+    title: 'Organizations',
     entries: [
       {
-        id: 'english',
-        title: 'English',
-        lines: [
-          'IELTS Academic 7.5 overall, CEFR C1 (Sep 2023). Listening 8.5, Reading 8.5, Writing 7.0, Speaking 6.5.',
-        ],
+        id: 'oc-hisa',
+        title: 'OC-HISA (Overseas Chinese Hsinchu Indonesian Student Association)',
+        org: 'Member',
+        dates: 'Sep 2024 to May 2025',
+        lead: 'Part of the Indonesian student community in Hsinchu: staying connected with fellow Indonesian students, sharing what studying abroad is like, and helping newer students settle into life in Taiwan.',
       },
-      { id: 'indonesian', title: 'Indonesian' },
-      { id: 'mandarin', title: 'Mandarin' },
     ],
   },
 ];
 
-/** The three facts on the Overview. Each links to its entry here. */
-export const highlights = [
-  { label: '1st place, Vibe Coding Youth Hackathon 2026', id: 'hackathon-1st-place' },
-  { label: 'Taiwan Outstanding Scholarship, 2024 to 2028', id: 'taiwan-outstanding-scholarship' },
-  { label: 'GPA 4.1/4.3 at NTHU', id: 'nthu' },
-];
+/** The line under an entry's title. */
+export const meta = (entry: Entry) => [entry.org, entry.place, entry.dates].filter(Boolean).join(', ');
 
 /** The roles held now, for the Overview. */
 export const currentRoles = groups[0]!.entries.filter((e) => e.dates?.endsWith('to present'));
+
+/** The schools, one line each, for the Overview. */
+export const schools = [
+  {
+    name: 'National Tsing Hua University (NTHU)',
+    rest: "Bachelor's degree in Computer Science, 2024 to 2028, GPA 4.1/4.3",
+  },
+  { name: 'SMAK 2 BPK PENABUR Bandung', rest: 'high school, 2021 to 2024' },
+];

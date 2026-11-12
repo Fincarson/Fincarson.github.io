@@ -4,9 +4,9 @@ slug: pymoney
 start: "2025-11"
 end: "2025-12"
 featured: false
-summary: Learning Python from scratch by building a simple money management system in the terminal.
+summary: A terminal expense and income tracker in Python, grown step by step from a simple script into an object-oriented program.
 about:
-  - PyMoney is a personal expense and income tracker that runs entirely in the terminal. You tell it how much money you have, add records such as "breakfast -50", view them and delete them, and it remembers everything the next time you open it.
+  - PyMoney is a terminal expense and income tracker in Python, grown step by step from a simple script into an object-oriented program with categories, search and saved records. You tell it how much money you have, add records such as "breakfast -50", view them and delete them, and it remembers everything the next time you open it.
   - It is a project-based learning exercise I did to learn the basics of Python.
 play:
   - Tell it how much money you have.

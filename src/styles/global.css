@@ -76,6 +76,10 @@ html {
   -webkit-text-size-adjust: 100%;
   /* Jump targets and focused controls stop below the sticky header. */
   scroll-padding-top: calc(var(--header-h) + var(--space-16));
+  /* What shows when the page is pulled past its top or bottom: the header's
+     colour above, the footer's below. Two flat halves behind the page; the
+     body covers them everywhere else. */
+  background: var(--sky-zenith) linear-gradient(var(--sky-zenith) 50%, var(--footer-bg) 50%) fixed;
 }
 
 /* A column as tall as the window, so the footer sits at the bottom on short pages. */
@@ -108,6 +112,9 @@ h1 {
 }
 h2 {
   font-size: var(--text-3xl);
+}
+h2 {
+  margin-bottom: var(--space-16);
 }
 h3 {
   font-size: var(--text-2xl);
@@ -531,7 +538,7 @@ main:focus {
 .page-hero {
   height: var(--hero-h);
 }
-/* Page titles: "PROJECTS", "ABOUT", a project's name. Always one line, in a
+/* Page titles: "PROJECTS", "ABOUT", "EXPERIENCE". Always one line, in a
    box as tall as one line of the full size. A title too long for the screen
    shrinks to fit (0.54em is a wide allowance per character) and stays on the
    box's bottom edge, so what follows never moves. */
@@ -547,7 +554,7 @@ main:focus {
   text-transform: uppercase;
   white-space: nowrap;
 }
-/* A project's name keeps its own spelling. */
+/* A sentence keeps its own spelling. */
 .page-title--plain {
   text-transform: none;
 }
@@ -741,12 +748,149 @@ main:focus {
   }
 }
 
-/* Content below the sky */
+/* Content below the sky. Every section starts with one line across the
+   content width, above its heading; the first section after a hero has none.
+   A heading sits closer to its own content than to anything above it. */
 .section {
-  margin-top: var(--space-64);
+  margin-top: var(--section-gap);
+  padding-top: var(--space-32);
+  border-top: 1px solid var(--rule);
+}
+.page > .section:first-child,
+.project-head + .section {
+  padding-top: 0;
+  border-top: 0;
 }
 .page > .section:first-child {
   margin-top: 0;
+}
+/* Both edges of running text line up, on every page. Hyphenation keeps the
+   word spacing even. Titles, the lines under them, cards and controls keep
+   their own alignment. */
+.page p,
+.page li {
+  text-align: justify;
+  hyphens: auto;
+  text-wrap: wrap;
+}
+.card p,
+.roles li,
+.entry-meta,
+.entry-links li,
+.actions li,
+.project-head p {
+  text-align: start;
+  hyphens: manual;
+}
+.project-head p {
+  text-align: center;
+}
+
+/* The slideshow on the Overview: one frame of fixed shape, the photos stacked
+   in it. The current one is opaque; a change is a crossfade in place. The
+   caption is white on a solid band, and the buttons are solid squares, so both
+   read on any photo. */
+.slideshow {
+  position: relative;
+}
+.slides {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--slide-bg);
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--fade) linear,
+    visibility 0s linear var(--fade);
+}
+.slide.is-current {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--fade) linear;
+}
+/* The other photos are not fetched until the page has loaded. */
+.slideshow:not(.is-ready) .slide:not(.is-current) {
+  display: none;
+}
+.slide picture {
+  display: block;
+  height: 100%;
+}
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* A cover with words is shown whole, at the top of the frame. */
+.slide--whole img {
+  object-fit: contain;
+  object-position: 50% 0;
+}
+.slide figcaption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  max-width: min(100%, 46rem);
+  padding: var(--space-8) var(--space-16);
+  background: var(--slide-bg);
+  color: var(--slide-ink);
+  font-size: var(--text-s);
+  line-height: 1.4;
+}
+.slide-btn {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: var(--slide-bg);
+  color: var(--slide-ink);
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease);
+}
+.slide-btn[hidden] {
+  display: none;
+}
+.slide-btn:hover {
+  background: var(--slide-bg-hover);
+}
+.slide-btn:focus-visible {
+  outline-color: var(--slide-ink);
+  outline-offset: -3px;
+}
+.slide-btn svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.slide-prev,
+.slide-next {
+  top: calc(50% - var(--tap) / 2);
+}
+.slide-prev {
+  left: 0;
+}
+.slide-next,
+.slide-pause {
+  right: 0;
+}
+.slide-pause {
+  top: 0;
+}
+.icon-play,
+.is-paused .icon-pause {
+  display: none;
+}
+.is-paused .icon-play {
+  display: block;
 }
 .lead {
   font-size: var(--text-l);
@@ -757,6 +901,10 @@ main:focus {
 }
 .points {
   padding-left: var(--space-24);
+  list-style: disc;
+}
+ol.points {
+  list-style: decimal;
 }
 .points li + li {
   margin-top: var(--space-4);
@@ -771,9 +919,6 @@ main:focus {
   padding: 0;
   max-width: none;
   list-style: none;
-}
-h2 + .cards {
-  margin-top: var(--space-24);
 }
 .card {
   display: flex;
@@ -835,7 +980,7 @@ h2 + .cards {
 
 /* About: the text, and the profile picture in its square box. The picture comes
    first on phones and sits at the right from 56em. */
-.about {
+.page > .section.about {
   display: grid;
   gap: var(--space-32);
   margin-top: var(--space-32);
@@ -849,28 +994,9 @@ h2 + .cards {
   width: 100%;
 }
 
-/* Overview: three facts in one plain row (stacked on phones), each a link to
-   its entry on the Experience page; and the roles held now, one line each. */
-.highlights {
-  display: grid;
-  margin: var(--space-24) 0 0;
-  padding: 0;
-  max-width: none;
-  list-style: none;
-}
-.highlights li {
-  border-top: 1px solid var(--border);
-}
-.highlights a {
-  display: flex;
-  align-items: center;
-  min-height: var(--tap);
-  padding-block: var(--space-12);
-  font-size: var(--text-l);
-  font-weight: 700;
-  line-height: 1.3;
-}
+/* Overview: the roles held now and the schools, one line each. */
 .roles {
+  margin-bottom: 0;
   padding: 0;
   list-style: none;
 }
@@ -878,51 +1004,26 @@ h2 + .cards {
   margin-top: var(--space-8);
 }
 
-/* Experience: an outline of jump links, then each group as a list of entries
-   divided by a line. An entry is its title in bold, the organisation, the
-   dates and a few short lines; a photo, where there is one, is small and sits
-   beside the text from 48em and under it on phones. */
+/* Experience: each group is a list of entries, 32 px apart. An entry is its
+   title in bold, one muted line (organisation, place, dates), a lead sentence
+   and bullets; a photo, where there is one, is small and sits beside the text
+   from 48em and under it on phones. */
 .xp {
   margin-top: var(--space-32);
 }
 /* One column, wide enough for the text and a photo beside it. */
-.xp > * {
-  max-width: 56rem;
-}
-.outline ul,
-.entry-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 var(--space-24);
-  margin: 0;
-  padding: 0;
-  max-width: none;
-  list-style: none;
-}
-.outline a,
-.entry-links a {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--tap);
-}
-.outline a {
-  font-weight: 700;
-}
-.outline + .section {
-  margin-top: var(--space-32);
-}
 .entries {
   margin: 0;
   padding: 0;
-  max-width: none;
+  max-width: 56rem;
   list-style: none;
-  border-bottom: 1px solid var(--border);
 }
 .entry {
   display: grid;
   gap: var(--space-16);
-  padding-block: var(--space-24);
-  border-top: 1px solid var(--border);
+}
+.entry + .entry {
+  margin-top: var(--space-32);
 }
 .entry h3 {
   margin: 0 0 var(--space-4);
@@ -930,21 +1031,32 @@ h2 + .cards {
   letter-spacing: 0;
   text-wrap: pretty;
 }
-.entry p {
+.entry p,
+.entry .points {
   margin: 0;
 }
 .entry-text > * {
   max-width: var(--measure);
 }
-.entry-dates {
+.entry-meta {
   color: var(--ink-muted);
 }
-.entry-lines {
-  margin-top: var(--space-12);
+.entry-lead,
+.entry .points {
+  margin-top: var(--space-8);
 }
-.entry-lines p + p,
 .entry-links {
-  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-24);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.entry-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
 }
 .entry-photo {
   width: min(100%, 20rem);
@@ -953,13 +1065,17 @@ h2 + .cards {
   width: 100%;
 }
 
-/* Project page: the picture, then the one-line description and the buttons,
-   centred; then the sections. The title is in the hero. The picture is pulled
-   up over the lower half of the hero's fade, in front of the sky art. */
+/* Project page: the hero holds no text. The picture straddles the hero's
+   bottom edge, its top half on the sky and its bottom half on the page, in
+   front of the sky art. --ar is the picture's own shape: a tall picture is
+   held to the height of a 2:1 one. Then the title, the one-line description,
+   the dates and the buttons, centred; then the sections in a reading column. */
 .project-lead {
+  --w: min(100vw - 2 * var(--gutter), 64rem, 32rem * var(--ar));
   position: relative;
-  width: min(100%, 36rem);
-  margin: calc(var(--hero-fade) / -2) auto 0;
+  width: var(--w);
+  max-width: 100%;
+  margin: calc(var(--w) / var(--ar) / -2) auto 0;
 }
 .project-lead img {
   width: 100%;
@@ -971,6 +1087,11 @@ h2 + .cards {
   margin-top: var(--space-32);
   text-align: center;
 }
+.project-title {
+  margin-bottom: var(--space-12);
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
 .project-head p {
   margin-inline: auto;
   max-width: 44ch;
@@ -981,6 +1102,10 @@ h2 + .cards {
 .project-head .project-dates {
   margin-top: var(--space-8);
 }
+/* The line runs across the content width; the text keeps the reading column. */
+.project > .section {
+  padding-inline: max(0px, (100% - var(--measure)) / 2);
+}
 /* More pictures, under the description. */
 .project-more {
   margin-block: var(--space-24);
@@ -988,30 +1113,12 @@ h2 + .cards {
 .project-more img {
   width: 100%;
 }
-.project-body {
-  max-width: var(--measure);
-  margin: var(--space-64) auto 0;
-}
-.project-body h2 {
-  margin-top: var(--space-48);
-}
-.project-body h2:first-child {
-  margin-top: 0;
-}
-/* Both edges of the text line up. Hyphenation keeps the word spacing even;
-   headings stay left-aligned. */
-.project-body p,
-.project-body li {
-  text-align: justify;
-  hyphens: auto;
-  text-wrap: wrap;
-}
-.project-body ol.points li::marker {
+.project ol.points li::marker {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-/* Footer: the opposite blue, rising out of the page in a short straight fade
+/* Footer: navy, rising out of the page in a short straight fade
    (the eased stops in tokens.css). The text sits on the solid colour below it. */
 .site-footer {
   margin-top: var(--space-48);
@@ -1104,9 +1211,11 @@ h2 + .cards {
   .cards {
     grid-template-columns: 1fr 1fr;
   }
-  .highlights {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: var(--space-32);
+  .slides {
+    aspect-ratio: 16 / 9;
+  }
+  .slide figcaption {
+    font-size: var(--text-base);
   }
   .entry--photo {
     grid-template-columns: minmax(0, 1fr) 15rem;
@@ -1139,7 +1248,7 @@ h2 + .cards {
   .hero .page-title span {
     display: inline;
   }
-  .about {
+  .page > .section.about {
     grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
     column-gap: var(--space-64);
     align-items: start;

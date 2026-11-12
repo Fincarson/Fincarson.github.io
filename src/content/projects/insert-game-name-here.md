@@ -6,7 +6,7 @@ end: "2025-06"
 featured: false
 summary: A 2.5D action game where you fight enemies, collect coins, buy weapons and defeat a boss.
 about:
-  - "Insert_Game_Name_Here is a 2.5D action game that three of us made for fun, inspired by Guardian Tales and Jujutsu Kaisen. The name is a team joke: the game really is called Insert Game Name Here."
+  - "Insert_Game_Name_Here is a 2.5D action game in C++ with Allegro 5 that three of us made for fun: you fight enemies, collect coins, buy weapons and beat the boss. It is inspired by Guardian Tales and Jujutsu Kaisen. The name is a joke we kept: the game really is called Insert Game Name Here."
 play:
   - Fight the enemies.
   - Collect coins.

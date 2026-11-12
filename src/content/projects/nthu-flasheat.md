@@ -6,8 +6,8 @@ featured: true
 summary: "A campus food pre-order app: order ahead, pick a pickup slot and track the order."
 award: 1st place, Vibe Coding Youth Hackathon 2026
 about:
-  - NTHU FlashEat is a campus food pre-order app. You order ahead, pick a pickup slot and track the order.
-  - Three of us built it in one afternoon at the Vibe Coding Youth Hackathon (NTHU, 3 October 2026), where it won 1st place.
+  - "At noon the campus canteens are always packed, which hurts most when you have somewhere to be. NTHU FlashEat is a campus food pre-order app that lets students order lunch ahead and grab it at pickup time: you order, pick a pickup slot and track the order."
+  - Three of us built it in one afternoon with AI-assisted coding on Newly, at the Vibe Coding Youth Hackathon (NTHU, 3 October 2026), where it won 1st place.
 play:
   - Order your food ahead.
   - Pick a pickup slot.

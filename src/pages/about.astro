@@ -10,29 +10,33 @@ import portrait from '../assets/profile-picture.png';
   description="About Vincent Jefferson: computer science student at National Tsing Hua University (NTHU) in Taiwan, studying to become an AI engineer."
   hero={{ title: 'About' }}
 >
-  <div class="page wrap about">
-    <div class="column">
-      <h2>Hi, I'm Vincent!</h2>
-      <p class="lead">
-        I'm a computer science student at National Tsing Hua University (NTHU) in Taiwan. I'm studying to become an AI
-        engineer, and I'm also learning cybersecurity and network engineering.
-      </p>
-      <p class="lead">Outside class, I read about AI agents and prompting, and I practice configuring Cisco devices.</p>
+  <div class="page wrap">
+    <section class="section about" aria-labelledby="hi">
+      <div class="column">
+        <h2 id="hi">Hi, I'm Vincent!</h2>
+        <p class="lead">
+          I'm a computer science student at National Tsing Hua University (NTHU) in Taiwan. I'm studying to become an
+          AI engineer, and I'm also learning cybersecurity and network engineering.
+        </p>
+        <p class="lead">
+          Outside class, I read about AI agents and prompting, and I practice configuring Cisco devices.
+        </p>
+      </div>
 
-      <Contact />
-    </div>
+      <div class="portrait">
+        <Picture
+          src={portrait}
+          alt="Vincent Jefferson's profile picture."
+          formats={['avif']}
+          fallbackFormat="webp"
+          widths={[240, 480]}
+          sizes="(min-width: 56em) 20rem, 14rem"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+    </section>
 
-    <div class="portrait">
-      <Picture
-        src={portrait}
-        alt="Vincent Jefferson's profile picture."
-        formats={['avif']}
-        fallbackFormat="webp"
-        widths={[240, 480]}
-        sizes="(min-width: 56em) 20rem, 14rem"
-        loading="eager"
-        fetchpriority="high"
-      />
-    </div>
+    <Contact />
   </div>
 </Base>

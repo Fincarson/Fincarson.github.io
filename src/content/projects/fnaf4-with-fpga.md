@@ -6,7 +6,7 @@ end: "2025-12"
 featured: false
 summary: Five Nights at Freddy's 4 recreated as pure digital logic on an FPGA, with no processor and no operating system.
 about:
-  - The whole game is a circuit on the chip. The game logic, the VGA timing, the audio driver and the keyboard interface all run at the same time, kept in order by a single clock. Nothing underneath it executes code.
+  - "FNAF4_with_FPGA is a recreation of Five Nights at Freddy's 4 built entirely in Verilog on a Basys 3 FPGA, with no processor or software: VGA graphics, PS/2 keyboard input and audio are handled directly in hardware. The whole game is a circuit on the chip. The game logic, the VGA timing, the audio driver and the keyboard interface all run at the same time, kept in order by a single clock. Nothing underneath it executes code."
   - The design drives a VGA display at 640x480, reads a PS/2 keyboard and produces I2S audio. The board's switches set the volume, and the LEDs and the seven-segment display show status and the countdown. It runs on a Digilent Basys 3 board (Xilinx Artix-7 XC7A35T).
 play:
   - At the main menu, press Enter to begin the night.

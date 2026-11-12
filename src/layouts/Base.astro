@@ -11,11 +11,12 @@ interface Props {
   /** The 404 page: it has no address of its own, so no canonical link, and it stays out of search. */
   notFound?: boolean;
   /** The page hero. Every page passes this except the Overview, which fills the `sky` slot itself. */
-  hero?: { title: string; subtitle?: string; plain?: boolean };
+  hero?: { title?: string; subtitle?: string; plain?: boolean };
 }
 
 const { title, description = site.description, notFound = false, hero } = Astro.props;
-const pageTitle = title ? `${title} | ${site.name}` : `${site.name}, ${site.headline}`;
+// The Overview's title is the name; every other page's is its own name.
+const pageTitle = title ?? site.name;
 const nav = sections.filter((s) => s.enabled);
 const path = Astro.url.pathname;
 const isCurrent = (p: string) => (p === '/' ? path === '/' : path.startsWith(p));
