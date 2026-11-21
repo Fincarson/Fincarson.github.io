@@ -13,7 +13,7 @@ import forumCertificate from './assets/experience/certificates/youth-speak-forum
 export interface Entry {
   id: string;
   title: string;
-  /** The line under the title: organisation, then place, then dates. */
+  /** The line under the title: organization, then place, then dates. */
   org?: string;
   place?: string;
   dates?: string;
@@ -45,7 +45,7 @@ export const groups: Group[] = [
         lead: 'Sole TA for Classics in Literature: Selected Readings of Western Classical Poetry, a general education course with 69 students.',
         points: [
           'Main contact between international students and the professor on assignments, workload and course expectations',
-          'Grade the midterm exams, and collect and summarise individual and group homework',
+          'Grade the midterm exams, and collect and summarize individual and group homework',
           'Form the final presentation teams and track attendance and leave requests',
           "Point students to the slides, readings and course materials on the university's online learning platform",
         ],
@@ -97,8 +97,8 @@ export const groups: Group[] = [
         title: 'Favorite Game award',
         org: 'Indie game hackathon at NTHU',
         dates: '2024',
-        lead: 'For Panda_Tales, a 2.5D action game I wrote in C with Allegro 5.',
-        links: [{ label: 'Panda_Tales project page', href: '/projects/panda-tales/' }],
+        lead: 'For Panda Tales, a 2.5D action game I wrote in C with Allegro 5.',
+        links: [{ label: 'Panda Tales project page', href: '/projects/panda-tales/' }],
       },
       {
         id: 'taiwan-outstanding-scholarship',
@@ -152,7 +152,7 @@ export const groups: Group[] = [
         dates: 'Jul 2021 to Jun 2024',
         points: [
           'Final grade 91.19/100',
-          '2LCB: a leadership, public speaking and communication program; organised events and served as MC with outside organisations',
+          '2LCB: a leadership, public speaking and communication program; organized events and served as MC with outside organizations',
           'Project Next: built an HTML/CSS website and presented it to Maranatha officials',
           "OSN Informatics: Indonesia's National Science Olympiad, in C++",
         ],

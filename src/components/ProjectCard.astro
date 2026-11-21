@@ -34,7 +34,7 @@ const media = data.media[0]!;
     />
   </div>
   <div class="card-body">
-    <Title class="card-title" set:html={data.title.replaceAll('_', '_<wbr>')} />
+    <Title class="card-title">{data.title}</Title>
     <p class="card-dates">{projectDates(data)}</p>
     <p>{data.summary}</p>
     {data.award && <p class="card-award">{data.award}</p>}

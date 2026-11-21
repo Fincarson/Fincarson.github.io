@@ -4,7 +4,7 @@
 
 export const site = {
   name: 'Vincent Jefferson',
-  headline: 'CS student at @NTHU',
+  headline: 'CS student at NTHU, studying to become an AI engineer',
   motto: 'Fortune favors the bold.',
   /** "About me" on the Overview, one string per paragraph. */
   about: [

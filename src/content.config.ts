@@ -18,7 +18,7 @@ const projects = defineCollection({
       award: z.string().optional(),
       /* The project page: facts only. An empty list leaves its
          section out; never fill one in without a source. */
-      /** "Description": paragraphs, set justified. */
+      /** "Description": paragraphs. */
       about: z.array(z.string()).default([]),
       /** "How to play", or "How to use" for an app. Numbered when the items are steps in order. */
       play: z.array(z.string()).default([]),

@@ -7,19 +7,28 @@
 // same box, empty, and the title sits under the picture.
 interface Props {
   title?: string;
+  /** Decoration after the title, hidden from screen readers: one character per piece. */
+  mark?: string;
   subtitle?: string;
   /** Keep the title's own spelling instead of capitals (sentences). */
   plain?: boolean;
 }
 
-const { title, subtitle, plain = false } = Astro.props;
+const { title, mark = '', subtitle, plain = false } = Astro.props;
 ---
 
 <div class="page-hero">
   {
     title && (
-      <h1 class:list={['page-title', { 'page-title--plain': plain }]} style={`--chars: ${title.length}`}>
+      <h1 class:list={['page-title', { 'page-title--plain': plain }]} style={`--chars: ${title.length + (mark ? mark.length + 1 : 0)}`}>
         {title}
+        {mark && (
+          <span class="title-mark" aria-hidden="true">
+            {[...mark].map((piece) => (
+              <span>{piece}</span>
+            ))}
+          </span>
+        )}
       </h1>
     )
   }

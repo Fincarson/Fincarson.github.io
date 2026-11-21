@@ -104,32 +104,30 @@
   /* The page hero: its text box (the title line and one subtitle line) and
      the height of the fade below it. */
   --hero-h: 5.5rem;
-  --hero-fade: 9rem;
+  --hero-fade: 4rem;
 
   /* Depth. Corners are square everywhere: there is no radius token. */
   --shadow-menu: 0 8px 16px rgb(0 35 65 / 0.18);
   --focus-ring: 3px solid var(--focus);
   --focus-offset: 3px;
 
-  /* Motion: hover and focus, the phone menu sliding in, and the entrance
-     of a section the first time it appears. */
+  /* Motion: hover and focus, and the phone menu sliding in. */
   --duration: 160ms;
   --slide: 240ms;
-  --enter: 500ms;
   --ease: cubic-bezier(0.2, 0, 0, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (min-width: 48em) {
   :root {
     --section-gap: var(--space-64);
     --hero-h: 7rem;
-    --hero-fade: 11rem;
+    --hero-fade: 5rem;
   }
 }
 
 @media (min-width: 56em) {
   :root {
+    --hero-fade: 6rem;
     --text-name: min(1rem + 8.9vw, 9rem);
   }
 }
@@ -137,12 +135,6 @@
 @media (min-width: 64em) {
   :root {
     --text-base: 1.125rem;
-  }
-}
-
-@media (min-width: 80em) {
-  :root {
-    --hero-fade: 12rem;
   }
 }
 

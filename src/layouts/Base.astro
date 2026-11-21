@@ -11,7 +11,7 @@ interface Props {
   /** The 404 page: it has no address of its own, so no canonical link, and it stays out of search. */
   notFound?: boolean;
   /** The page hero. Every page passes this except the Overview, which fills the `sky` slot itself. */
-  hero?: { title?: string; subtitle?: string; plain?: boolean };
+  hero?: { title?: string; mark?: string; subtitle?: string; plain?: boolean };
 }
 
 const { title, description = site.description, notFound = false, hero } = Astro.props;
@@ -56,9 +56,7 @@ function stars(seed: number, count: number) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Marks that scripts run, and applies the saved theme before first paint. The choice never leaves the browser.
-         Then the entrance: only the first time this page is opened in this browser session, and never when
-         reduced motion is asked for. Set before the first paint, so nothing shows and then hides. -->
+    <!-- Marks that scripts run, and applies the saved theme before first paint. The choice never leaves the browser. -->
     <script is:inline>
       (() => {
         const root = document.documentElement;
@@ -66,14 +64,6 @@ function stars(seed: number, count: number) {
         try {
           if (localStorage.getItem('theme') === 'dark') root.dataset.theme = 'dark';
         } catch {}
-        let seen = false;
-        try {
-          const paths = (sessionStorage.getItem('seen') || '').split('\n');
-          seen = paths.includes(location.pathname);
-          if (!seen) sessionStorage.setItem('seen', paths.concat(location.pathname).join('\n'));
-        } catch {}
-        if (!seen && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches)
-          root.classList.add('enter');
       })();
     </script>
     <title>{pageTitle}</title>
@@ -127,7 +117,7 @@ function stars(seed: number, count: number) {
               type="button"
               aria-expanded="false"
               aria-controls="lang-menu"
-              aria-label="Language: English (EN)"
+              aria-label="EN, language: English"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
                 <circle cx="12" cy="12" r="9.5"></circle>
@@ -135,10 +125,11 @@ function stars(seed: number, count: number) {
               </svg>
               <span aria-hidden="true">EN</span>
             </button>
-            <!-- One entry per language; each links to this page in that language. -->
+            <!-- One entry per language; each links to this page in that language.
+                 The 404 page has no address of its own, so there it links to the Overview. -->
             <ul class="lang-menu" id="lang-menu" hidden>
               <li>
-                <a href={path} lang="en" hreflang="en" aria-current="true">
+                <a href={notFound ? '/' : path} lang="en" hreflang="en" aria-current="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true" focusable="false">
                     <path d="M4 12.5l5 5L20 6.5"></path>
                   </svg>
@@ -189,7 +180,7 @@ function stars(seed: number, count: number) {
       </div>
     </dialog>
     <main id="main" tabindex="-1">
-      <div class:list={['sky', { 'sky--hero': !hero }]}>
+      <div class:list={['sky', { 'sky--hero': !hero, 'sky--away': notFound }]}>
         <!-- The text comes before the art in the markup, so a browser that paints while it is still
              reading the page already has the hero at its full height. -->
         <div class="wrap">
@@ -242,46 +233,6 @@ function stars(seed: number, count: number) {
       </div>
       <slot />
     </main>
-    <script is:inline>
-      // The entrance: each block of the content area fades up once. Blocks on screen now go
-      // straight away, top first, 80 ms apart; the others when about 15% of them is in view
-      // (a block taller than the window: a quarter of the window). A block that a jump link
-      // or keyboard focus reaches is shown at once.
-      (() => {
-        if (!document.documentElement.classList.contains('enter')) return;
-        const now = (el) => el && el.classList.add('in', 'now');
-        let onScreen = 0;
-        for (const el of document.querySelectorAll('.page > *')) {
-          const r = el.getBoundingClientRect();
-          const need = Math.min(r.height * 0.15, innerHeight * 0.25);
-          if (r.bottom <= 0) now(el);
-          else if (Math.min(r.bottom, innerHeight) - Math.max(r.top, 0) >= need) {
-            el.style.setProperty('--d', `${80 * onScreen++}ms`);
-            el.classList.add('in');
-          } else {
-            const share = r.height ? need / r.height : 0;
-            const io = new IntersectionObserver(
-              ([e]) => {
-                if (e.intersectionRatio < share * 0.98) return;
-                el.classList.add('in');
-                io.disconnect();
-              },
-              { threshold: share },
-            );
-            io.observe(el);
-          }
-        }
-        const reach = (node) => node && node.closest && now(node.closest('.page > :not(.in)'));
-        const jump = () => {
-          try {
-            reach(document.getElementById(decodeURIComponent(location.hash.slice(1))));
-          } catch {}
-        };
-        document.addEventListener('focusin', (e) => reach(e.target));
-        addEventListener('hashchange', jump);
-        jump();
-      })();
-    </script>
     <footer class="site-footer">
       <div class="wrap">
         <div class="footer-cols">
