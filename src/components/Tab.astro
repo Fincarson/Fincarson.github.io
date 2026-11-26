@@ -1,0 +1,24 @@
+---
+// One panel of a page: its own sky and its content. A page holds every panel;
+// the address picks the one that shows (the scripts in the layout). Without
+// scripts they all show, one after another.
+import Sky from './Sky.astro';
+
+interface Props {
+  /** The query that opens the panel: '' for Home, 'tab=about', 'tab=projects&project=<slug>'. */
+  id: string;
+  /** The meta description while this panel shows. */
+  description: string;
+  kind?: 'home' | 'page' | 'away' | 'nthu-home' | 'nthu-page';
+  hero?: { title?: string; mark?: string; subtitle?: string; plain?: boolean };
+  /** Shown only when the address asks for it, never in the run of panels without scripts. */
+  unlisted?: boolean;
+}
+
+const { id, description, kind, hero, unlisted = false } = Astro.props;
+---
+
+<div class:list={['tab', { 'tab--unlisted': unlisted }]} data-id={id} data-description={description}>
+  <Sky kind={kind} hero={hero}><slot name="sky" /></Sky>
+  <slot />
+</div>

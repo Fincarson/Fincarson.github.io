@@ -187,9 +187,22 @@ a:hover {
   transform: none;
 }
 
-/* The skip link lands here; main itself is not a control. */
-main:focus {
+/* The skip link lands on main and a switch of tabs on the new title; neither is a control. */
+main:focus,
+.tab h1:focus {
   outline: none;
+}
+
+/* Tabs. A page holds one panel per tab and the address picks the one on
+   show: a script in the head hides the others before the first paint.
+   Without scripts they all show, one after another, except the panel for an
+   address that names nothing. */
+.tab--unlisted {
+  display: none;
+}
+/* The shapes of the sky art: defined once, placed by every sky. */
+.art-defs {
+  position: absolute;
 }
 
 /* Buttons. Internal: deep blue. External: the platform's own colour and its
@@ -305,8 +318,10 @@ main:focus {
   text-decoration: none;
   white-space: nowrap;
 }
+/* The current tab is underlined by the script in the head, before the first
+   paint; without scripts the attribute alone marks it. */
 .site-header nav a:hover,
-.site-header nav [aria-current] {
+html:not(.js) .site-header nav [aria-current] {
   text-decoration: underline;
 }
 .tool {
@@ -517,6 +532,9 @@ main:focus {
     var(--bg) 99.6%
     )
       bottom / 100% calc(var(--f) * 4) no-repeat;
+  /* A browser may dither a gradient by one colour level. A flat line of the
+     page colour over the last pixel row keeps that row exact. */
+  box-shadow: inset 0 -1px var(--bg);
 }
 /* The room the fade takes below the text. */
 .sky::after {
@@ -533,7 +551,7 @@ main:focus {
   margin: 0;
   max-width: none;
 }
-/* The page hero: every page but the Overview. The box has one fixed height, so
+/* The page hero: every tab but Home. The box has one fixed height, so
    the hero is the same on every page and the title and subtitle never move. */
 .page-hero {
   height: var(--hero-h);
@@ -578,7 +596,7 @@ main:focus {
   font-weight: 700;
   line-height: 1.4;
 }
-/* Overview: the name, the only giant title on the site. Its hero is the
+/* Home: the name, the only giant title on the site. Its hero is the
    tallest: about half a screen. */
 .sky--hero {
   --sky-pad: var(--space-32);
@@ -613,6 +631,24 @@ main:focus {
   font-size: var(--text-xl);
   line-height: 2.125rem;
   text-wrap: balance;
+}
+/* The NTHU section's Home hero is exactly as tall as the main site's at every
+   width: the main hero's text lies under it, unseen, and sets the height. On
+   phones, where that text takes more lines, the shorter text sits in the middle. */
+.hero--stack {
+  display: grid;
+}
+.hero--stack > * {
+  grid-area: 1 / 1;
+}
+.hero-size {
+  visibility: hidden;
+}
+.hero-size .page-title {
+  font-family: var(--font-display);
+}
+.hero-text {
+  align-self: center;
 }
 
 /* Sky art: clouds at the two sides and a few doves by day, stars by night.
@@ -710,7 +746,7 @@ main:focus {
   top: 31%;
   width: clamp(0.875rem, 1.5vw, 1.375rem);
 }
-/* The 404 page: one dove, flying away on the right. */
+/* Not found: one dove, flying away on the right. */
 .sky--away .dove {
   display: none;
 }
@@ -777,6 +813,98 @@ main:focus {
   }
 }
 
+/* The NTHU section's sky: a strip of trees along the bottom of every hero and,
+   on its Home, the campus building at the left and the gate tower at the
+   right, behind the trees. All in the sky's ink, standing on the hero's bottom
+   edge and dissolving into the page like the rest of the sky. By day one
+   cloud and a dove or two; at night the stars show through. The sizes are the
+   drawings' own, in pixels. */
+.nthu-building,
+.nthu-tower,
+.nthu-trees {
+  bottom: 0;
+  -webkit-mask-image: linear-gradient(#000 72%, transparent 99%);
+  mask-image: linear-gradient(#000 72%, transparent 99%);
+}
+/* Pushed off the left edge until half of its side windows are out of sight,
+   and further on narrower screens: it never reaches under the title. */
+.nthu-building {
+  --w: calc(345px * 600 / 420);
+  width: var(--w);
+  height: 345px;
+  left: min(var(--w) / -6, 50% - 205px - var(--w));
+}
+.nthu-tower {
+  width: calc(330px * 110 / 440);
+  height: 330px;
+  left: calc(50% + 470px);
+}
+.nthu-trees {
+  left: 0;
+  width: 100%;
+  height: 110px;
+  -webkit-mask-image: linear-gradient(#000 70%, transparent 99%);
+  mask-image: linear-gradient(#000 70%, transparent 99%);
+}
+.sky--nthu-home .nthu-trees {
+  height: 140px;
+}
+.t-narrow {
+  display: none;
+}
+[data-theme='dark'] :is(.nthu-building, .nthu-tower, .nthu-trees) {
+  opacity: 0.55;
+}
+.nthu-day {
+  opacity: 0.94;
+}
+[data-theme='dark'] .nthu-day {
+  display: none;
+}
+.sky--nthu-home .n-cloud {
+  left: calc(50% + 235px);
+  top: 150px;
+  width: 140px;
+}
+.sky--nthu-home .n-dove-r {
+  left: calc(50% + 300px);
+  top: 92px;
+  width: 34px;
+}
+.n-dove-l {
+  left: calc(50% - 330px);
+  top: 105px;
+  width: 26px;
+}
+.sky--nthu-page .n-cloud {
+  right: 16%;
+  top: 58px;
+  width: 130px;
+}
+.sky--nthu-page .n-dove-r {
+  right: 30%;
+  top: 44px;
+  width: 28px;
+}
+/* Phones: the trees only. */
+@media (max-width: 39.99em) {
+  .nthu-building,
+  .nthu-tower,
+  .nthu-day,
+  .t-wide {
+    display: none;
+  }
+  .t-narrow {
+    display: block;
+  }
+  .nthu-trees {
+    height: 78px;
+  }
+  .sky--nthu-home .nthu-trees {
+    height: 64px;
+  }
+}
+
 /* Content below the sky. Every section starts with one line across the
    content width, above its heading; the first section after a hero has none.
    A heading sits closer to its own content than to anything above it. */
@@ -792,6 +920,10 @@ main:focus {
 }
 .page > .section:first-child {
   margin-top: 0;
+}
+/* Under the trees of the NTHU section the first section keeps its space. */
+.page--nthu > .section:first-child {
+  margin-top: var(--section-gap);
 }
 /* Pictures. Until one arrives its box, already sized, shows a plain plate in
    the surface colour; the picture then covers it. If it never arrives the
@@ -819,7 +951,7 @@ ol.points {
   margin-top: var(--space-4);
 }
 
-/* Project cards, on Projects and Overview. Each row shares a height and the
+/* Project cards, on Projects and Home. Each row shares a height and the
    buttons sit on its bottom edge. */
 .cards {
   display: grid;
@@ -900,7 +1032,7 @@ ol.points {
   width: 100%;
 }
 
-/* Overview: what I work with, the roles held now, the awards and the
+/* Home: what I work with, the roles held now, the awards and the
    schools, one line each. A role has one short line under it. */
 .roles {
   margin-bottom: 0;
@@ -917,10 +1049,10 @@ ol.points {
   margin-top: var(--space-16);
 }
 
-/* Experience: each group is a list of entries, 32 px apart. An entry is its
-   title in bold, one muted line (organisation, place, dates), a lead sentence
-   and bullets; a photo, where there is one, is small and sits beside the text
-   from 48em and under it on phones. */
+/* Experience and Education: each group is a list of entries, 32 px apart. An
+   entry is its title in bold, one muted line (organisation, place, dates), a
+   lead sentence and bullets; a photo, where there is one, is small and sits
+   beside the text from 48em and under it on phones. */
 .xp,
 .notfound {
   margin-top: var(--space-16);
@@ -972,6 +1104,9 @@ ol.points {
   align-items: center;
   min-height: var(--tap);
 }
+.entry .actions {
+  margin-top: var(--space-16);
+}
 .entry-photo {
   width: min(100%, 20rem);
 }
@@ -979,7 +1114,7 @@ ol.points {
   width: 100%;
 }
 
-/* Project page: the hero holds no text. The picture straddles the hero's
+/* A project: the hero holds no text. The picture straddles the hero's
    bottom edge, in front of the sky art: half of it on the sky, or, when it
    is taller than that, from where a page title would start. --ar is the
    picture's own shape: a tall picture is held to the height of a 2:1 one. Then the title, the one-line description,
@@ -1032,7 +1167,7 @@ ol.points {
   font-variant-numeric: tabular-nums;
 }
 
-/* The 404 page: what went wrong, how to fix it, one button. */
+/* Not found: what went wrong, how to fix it, one button. */
 .notfound .points {
   margin-bottom: var(--space-24);
 }

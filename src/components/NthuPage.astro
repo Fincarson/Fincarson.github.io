@@ -1,0 +1,75 @@
+---
+// The whole NTHU section: one page, one panel per tab.
+import Base from '../layouts/Base.astro';
+import Tab from './Tab.astro';
+import Button from './Button.astro';
+import NotFound from './NotFound.astro';
+import { site, nthu, tabId, NOT_FOUND } from '../site.config';
+
+const [given, family] = site.name.split(' ');
+const descriptions = {
+  home: 'National Tsing Hua University (NTHU) in Hsinchu, Taiwan: a section of the website of Vincent Jefferson, a student there. Still under construction.',
+  about:
+    'About National Tsing Hua University (NTHU), a public research university in Hsinchu, Taiwan, and about the author of this section.',
+};
+const panels = [
+  { id: tabId(''), title: 'NTHU' },
+  { id: tabId('about'), title: 'About NTHU' },
+  { id: NOT_FOUND, title: 'Page not found' },
+];
+---
+
+<Base variant="nthu" panels={panels} description={descriptions.home}>
+  <Tab id={tabId('')} description={descriptions.home} kind="nthu-home">
+    <div class="hero hero--stack" slot="sky">
+      <!-- The main site's Home hero, unseen: it gives this hero the same height at every width. -->
+      <div class="hero-size" aria-hidden="true">
+        <div class="page-title"><span>{given}</span> <span>{family}</span></div>
+        <p class="page-sub">{site.headline}</p>
+        <p class="motto">{site.motto}</p>
+      </div>
+      <div class="hero-text">
+        <h1 class="page-title" tabindex="-1">NTHU</h1>
+        <p class="page-sub">National Tsing Hua University</p>
+        <p class="motto">Hsinchu, Taiwan</p>
+      </div>
+    </div>
+
+    <div class="page page--nthu wrap">
+      <section class="section">
+        <p>This website is still under construction. Thank you for waiting!</p>
+      </section>
+    </div>
+  </Tab>
+
+  <Tab id={tabId('about')} description={descriptions.about} kind="nthu-page" hero={{ title: 'About' }}>
+    <div class="page page--nthu wrap">
+      <section class="section" aria-labelledby="nthu-university">
+        <h2 id="nthu-university">National Tsing Hua University</h2>
+        <p>
+          National Tsing Hua University (NTHU, <span lang="zh-Hant">國立清華大學</span>) is a public research university
+          in Hsinchu, Taiwan. It was founded in Beijing in 1911 and re-established on its current campus in Hsinchu in
+          1956, right next to the Hsinchu Science Park.
+        </p>
+      </section>
+
+      <section class="section" aria-labelledby="nthu-author">
+        <h2 id="nthu-author">About the author</h2>
+        <p>Click here to find out more about the author.</p>
+        <ul class="actions">
+          <li><Button href="/">Author's page</Button></li>
+        </ul>
+      </section>
+    </div>
+  </Tab>
+
+  <Tab
+    id={NOT_FOUND}
+    description="This page does not exist on fincarson.github.io."
+    kind="away"
+    hero={{ title: 'Error 404', mark: ':(', subtitle: 'Page not found.', plain: true }}
+    unlisted
+  >
+    <NotFound home={nthu.base} />
+  </Tab>
+</Base>

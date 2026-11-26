@@ -1,14 +1,15 @@
 // Layout check: switching between the light and the dark theme may change
-// colours only. Serves dist/, opens every page at a phone and a desktop width,
-// records the box of every element in light, presses the theme toggle, records
-// again, and fails if any box moved or changed size.
+// colours only. Serves dist/, opens every tab address in the sitemap (and an
+// address that names no tab, on each page, and the 404 page) at a phone and a
+// desktop width, records the box of every element in light, presses the theme
+// toggle, records again, and fails if any box moved or changed size.
 // Left out: the sky art and the toggle's icon, which are different drawings in
 // each theme by design and take no part in the layout.
 // Needs a build in dist/ and Google Chrome (CHROME_PATH overrides the lookup).
 // Run: node scripts/check-theme-layout.mjs
 import { createServer } from 'node:http';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { extname, join, relative, sep } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { extname, join } from 'node:path';
 import { chromium } from 'playwright-core';
 
 const DIST = 'dist';
@@ -31,19 +32,22 @@ if (!existsSync(join(DIST, 'index.html'))) {
   process.exit(1);
 }
 
-function walk(dir) {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-    e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)],
-  );
-}
-const pages = walk(DIST)
-  .filter((f) => extname(f) === '.html')
-  .map((f) => '/' + relative(DIST, f).split(sep).join('/').replace(/index\.html$/, ''))
-  .sort();
+// The addresses people open: the sitemap's, then the ones that show "not found".
+const sitemap = readFileSync(join(DIST, 'sitemap-0.xml'), 'utf8');
+const pages = [
+  ...[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => {
+    const url = new URL(m[1].replaceAll('&amp;', '&'));
+    return url.pathname + url.search;
+  }),
+  '/?tab=nothing',
+  '/nthu?tab=nothing',
+  '/404.html',
+];
 
 const server = createServer((req, res) => {
   let path = join(DIST, decodeURIComponent(new URL(req.url, 'http://x').pathname));
   if (existsSync(join(path, 'index.html'))) path = join(path, 'index.html');
+  else if (existsSync(path + '.html')) path += '.html';
   if (!existsSync(path) || !extname(path)) {
     res.writeHead(404).end();
     return;
@@ -110,4 +114,4 @@ if (problems.length) {
   console.error(problems.join('\n'));
   process.exit(1);
 }
-console.log(`check-theme-layout: passed (${pages.length} pages at ${WIDTHS.join(' and ')} px, ${compared} boxes identical in light and dark)`);
+console.log(`check-theme-layout: passed (${pages.length} addresses at ${WIDTHS.join(' and ')} px, ${compared} boxes identical in light and dark)`);

@@ -1,95 +1,200 @@
 ---
+// The whole main site: one page, one panel per tab and one per project.
+import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import Tab from '../components/Tab.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import { overview } from '../experience';
-import { site } from '../site.config';
+import ProjectPanel from '../components/ProjectPanel.astro';
+import Entries from '../components/Entries.astro';
+import Contact from '../components/Contact.astro';
+import NotFound from '../components/NotFound.astro';
+import { groups as experience, home } from '../experience';
+import { groups as education } from '../education';
+import { site, tabId, projectId, NOT_FOUND } from '../site.config';
 import { getProjects } from '../projects';
+import portrait from '../assets/profile-picture.png';
 
-const featured = (await getProjects()).filter((p) => p.data.featured);
+const projects = await getProjects();
+const featured = projects.filter((p) => p.data.featured);
 const [given, family] = site.name.split(' ');
+
+const descriptions = {
+  experience: 'Experience, awards, organizations and events of Vincent Jefferson, CS student at NTHU.',
+  projects:
+    'Projects by Vincent Jefferson: a campus food pre-order app, a Flutter trip planner, an FPGA game in Verilog, and games and tools in C, C++ and Python.',
+  education: 'Education of Vincent Jefferson: NTHU, high school, courses and certifications.',
+  about:
+    'About Vincent Jefferson: computer science student at National Tsing Hua University (NTHU) in Taiwan, studying to become an AI engineer.',
+  missing: 'This page does not exist on fincarson.github.io.',
+};
+// Browser tab titles: the name on Home, the tab's or the project's own name elsewhere.
+const panels = [
+  { id: tabId(''), title: site.name },
+  { id: tabId('experience'), title: 'Experience' },
+  { id: tabId('projects'), title: 'Projects' },
+  { id: tabId('education'), title: 'Education' },
+  { id: tabId('about'), title: 'About' },
+  ...projects.map((p) => ({ id: projectId(p.data.slug), title: p.data.title })),
+  { id: NOT_FOUND, title: 'Page not found' },
+];
 ---
 
-<Base>
-  <div class="hero" slot="sky">
-    <h1 class="page-title"><span>{given}</span> <span>{family}</span></h1>
-    <p class="page-sub">{site.headline}</p>
-    <p class="motto">{site.motto}</p>
-  </div>
+<Base panels={panels}>
+  <Tab id={tabId('')} description={site.description} kind="home">
+    <div class="hero" slot="sky">
+      <h1 class="page-title" tabindex="-1"><span>{given}</span> <span>{family}</span></h1>
+      <p class="page-sub">{site.headline}</p>
+      <p class="motto">{site.motto}</p>
+    </div>
 
-  <div class="page wrap">
-    <section class="section" aria-labelledby="about-me">
-      <h2 id="about-me">About me</h2>
-      {site.about.map((paragraph) => <p>{paragraph}</p>)}
-    </section>
+    <div class="page wrap">
+      <section class="section" aria-labelledby="home-about">
+        <h2 id="home-about">About me</h2>
+        {site.about.map((paragraph) => <p>{paragraph}</p>)}
+      </section>
 
-    <section class="section" aria-labelledby="work-with">
-      <h2 id="work-with">What I work with</h2>
-      <ul class="roles">
-        {
-          site.workWith.map((group) => (
-            <li>
-              <strong>{group.label}:</strong> {group.items}
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+      <section class="section" aria-labelledby="home-work">
+        <h2 id="home-work">What I work with</h2>
+        <ul class="roles">
+          {
+            site.workWith.map((group) => (
+              <li>
+                <strong>{group.label}:</strong> {group.items}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
 
-    <section class="section" aria-labelledby="experience">
-      <h2 id="experience">Experience</h2>
-      <ul class="roles roles--notes">
-        {
-          overview.roles.map((role) => (
-            <li>
-              <p>
-                <strong>{role.name}</strong>, {role.rest}
-              </p>
-              <p>{role.note}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+      <section class="section" aria-labelledby="home-experience">
+        <h2 id="home-experience">Experience</h2>
+        <ul class="roles roles--notes">
+          {
+            home.roles.map((role) => (
+              <li>
+                <p>
+                  <strong>{role.name}</strong>, {role.rest}
+                </p>
+                <p>{role.note}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
 
-    <section class="section" aria-labelledby="awards">
-      <h2 id="awards">Awards</h2>
-      <ul class="roles">
-        {
-          overview.awards.map((award) => (
-            <li>
-              <strong>{award.name}</strong>
-              {award.rest}
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+      <section class="section" aria-labelledby="home-awards">
+        <h2 id="home-awards">Awards</h2>
+        <ul class="roles">
+          {
+            home.awards.map((award) => (
+              <li>
+                <strong>{award.name}</strong>
+                {award.rest}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
 
-    <section class="section" aria-labelledby="featured">
-      <h2 id="featured">Featured projects</h2>
+      <section class="section" aria-labelledby="home-featured">
+        <h2 id="home-featured">Featured projects</h2>
+        <ul class="cards">
+          {
+            featured.map((project) => (
+              <li>
+                <ProjectCard project={project} level="h3" />
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="section" aria-labelledby="home-education">
+        <h2 id="home-education">Education</h2>
+        <ul class="roles">
+          {
+            home.schools.map((school) => (
+              <li>
+                <strong>{school.name}</strong>
+                {school.rest}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+  </Tab>
+
+  <Tab id={tabId('experience')} description={descriptions.experience} hero={{ title: 'Experience' }}>
+    <div class="page wrap xp">
+      <Entries groups={experience} />
+    </div>
+  </Tab>
+
+  <Tab
+    id={tabId('projects')}
+    description={descriptions.projects}
+    hero={{ title: 'Projects', subtitle: 'The Collection of My Projects' }}
+  >
+    <div class="page wrap">
       <ul class="cards">
         {
-          featured.map((project) => (
+          projects.map((project) => (
             <li>
-              <ProjectCard project={project} level="h3" />
+              <ProjectCard project={project} />
             </li>
           ))
         }
       </ul>
-    </section>
+    </div>
+  </Tab>
 
-    <section class="section" aria-labelledby="education">
-      <h2 id="education">Education</h2>
-      <ul class="roles">
-        {
-          overview.schools.map((school) => (
-            <li>
-              <strong>{school.name}</strong>
-              {school.rest}
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-  </div>
+  <Tab id={tabId('education')} description={descriptions.education} hero={{ title: 'Education' }}>
+    <div class="page wrap xp">
+      <Entries groups={education} />
+    </div>
+  </Tab>
+
+  <Tab id={tabId('about')} description={descriptions.about} hero={{ title: 'About' }}>
+    <div class="page wrap">
+      <section class="section about" aria-labelledby="hi">
+        <div class="column">
+          <h2 id="hi">Hi, I'm Vincent!</h2>
+          <p class="lead">
+            I'm a computer science student at National Tsing Hua University (NTHU) in Taiwan. I'm studying to become an
+            AI engineer, and I'm also learning cybersecurity and network engineering.
+          </p>
+          <p class="lead">
+            Outside class, I read about AI agents and prompting, and I practice configuring Cisco devices.
+          </p>
+        </div>
+
+        <div class="portrait">
+          <Picture
+            src={portrait}
+            alt="Vincent Jefferson's profile picture."
+            formats={['avif']}
+            fallbackFormat="webp"
+            widths={[240, 480]}
+            sizes="(min-width: 56em) 20rem, 14rem"
+            loading="lazy"
+          />
+        </div>
+      </section>
+
+      <Contact />
+    </div>
+  </Tab>
+
+  {projects.map((project) => <ProjectPanel project={project} />)}
+
+  <Tab
+    id={NOT_FOUND}
+    description={descriptions.missing}
+    kind="away"
+    hero={{ title: 'Error 404', mark: ':(', subtitle: 'Page not found.', plain: true }}
+    unlisted
+  >
+    <NotFound />
+  </Tab>
 </Base>

@@ -4,6 +4,7 @@
 // Each aria-label starts with the visible text and names the project.
 import type { CollectionEntry } from 'astro:content';
 import Button from './Button.astro';
+import { projectPath } from '../site.config';
 
 interface Props {
   project: CollectionEntry<'projects'>;
@@ -40,7 +41,7 @@ const { data } = project;
   {
     details && (
       <li>
-        <Button href={`/projects/${data.slug}/`} label={`See details: ${data.title}`}>
+        <Button href={projectPath(data.slug)} label={`See details: ${data.title}`}>
           See details
         </Button>
       </li>

@@ -1,0 +1,29 @@
+---
+// What an address that names no page, tab or project shows.
+import Button from './Button.astro';
+
+interface Props {
+  /** Where "Back to Homepage" leads. */
+  home?: string;
+}
+
+const { home = '/' } = Astro.props;
+---
+
+<div class="page wrap notfound">
+  <p>The page you were looking for isn't here. Usually that's because:</p>
+  <ul class="points">
+    <li>The address has a typo.</li>
+    <li>The link you followed is old or broken.</li>
+    <li>The page has moved or no longer exists.</li>
+  </ul>
+  <p>How to fix it:</p>
+  <ul class="points">
+    <li>Check the address for typos.</li>
+    <li>Find the page from the menu at the top.</li>
+    <li>Or go back to the homepage.</li>
+  </ul>
+  <ul class="actions">
+    <li><Button href={home}>Back to Homepage</Button></li>
+  </ul>
+</div>

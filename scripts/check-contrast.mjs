@@ -1,5 +1,6 @@
 // Computes the WCAG 2 contrast ratio for every text and UI token pair
-// in light and dark, and fails below the target.
+// in light and dark, for the main site's palette and the NTHU section's,
+// and fails below the target.
 // The colours are read from src/styles/tokens.css, so the check and the site
 // cannot drift apart. Add a pair here whenever a new foreground/background
 // combination is used.
@@ -7,12 +8,21 @@
 import { readFileSync } from 'node:fs';
 
 const css = readFileSync(new URL('../src/styles/tokens.css', import.meta.url), 'utf8');
-const [lightCss, darkCss] = css.split(":root[data-theme='dark']");
-const read = (text) =>
-  Object.fromEntries([...text.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})\b/gi)].map((m) => [m[1], m[2].toUpperCase()]));
-const light = read(lightCss);
-const dark = { ...light, ...read(darkCss) };
-const themes = { light, dark };
+// The colours one block of tokens.css sets, found by the selector that opens it.
+const read = (selector) => {
+  const start = css.indexOf(`\n${selector} {`);
+  if (start < 0) throw new Error(`check-contrast: block "${selector}" not found in tokens.css`);
+  const block = css.slice(start, css.indexOf('\n}', start));
+  return Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})\b/gi)].map((m) => [m[1], m[2].toUpperCase()]));
+};
+// Each palette as the browser resolves it: the NTHU section's blocks lie over the main ones.
+const nthu = ":root[data-site='nthu']";
+const light = read(':root');
+const dark = { ...light, ...read(":root[data-theme='dark']") };
+const palettes = {
+  main: { light, dark },
+  nthu: { light: { ...light, ...read(nthu) }, dark: { ...dark, ...read(nthu), ...read(`${nthu}[data-theme='dark']`) } },
+};
 
 // Targets: 7 body text (AAA), 4.5 other text (AA), 3 large text and UI parts.
 // Text on the sky and the header is large text (24 px, or 18.66 px bold) by design.
@@ -48,12 +58,14 @@ const spec = [
   ['language menu tick on bg', 'link', 'bg', 3, both],
   ['footer text on the footer ground', 'footer-ink', 'footer-bg', 4.5, both],
 ];
-const pairs = spec.flatMap(([label, fg, bg, min, on]) =>
-  on.map((theme) => {
-    const t = themes[theme];
-    if (!t[fg] || !t[bg]) throw new Error(`check-contrast: token --${t[fg] ? bg : fg} not found in tokens.css`);
-    return [theme, label, t[fg], t[bg], min];
-  }),
+const pairs = Object.entries(palettes).flatMap(([site, themes]) =>
+  spec.flatMap(([label, fg, bg, min, on]) =>
+    on.map((theme) => {
+      const t = themes[theme];
+      if (!t[fg] || !t[bg]) throw new Error(`check-contrast: token --${t[fg] ? bg : fg} not found in tokens.css`);
+      return [`${site} ${theme}`, label, t[fg], t[bg], min];
+    }),
+  ),
 );
 
 function luminance(hex) {
@@ -74,7 +86,7 @@ for (const [theme, label, fg, bg, min] of pairs) {
   const r = ratio(fg, bg);
   const ok = r >= min;
   if (!ok) failed++;
-  console.log(`${ok ? 'pass' : 'FAIL'}  ${theme.padEnd(5)} ${r.toFixed(2).padStart(5)}:1 (min ${min})  ${fg} on ${bg}  ${label}`);
+  console.log(`${ok ? 'pass' : 'FAIL'}  ${theme.padEnd(10)} ${r.toFixed(2).padStart(5)}:1 (min ${min})  ${fg} on ${bg}  ${label}`);
 }
 
 if (failed) {

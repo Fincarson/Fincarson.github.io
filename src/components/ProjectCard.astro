@@ -1,7 +1,8 @@
 ---
-// One project, on Projects and Overview: picture, title, dates, one-line
+// One project, on Projects and Home: picture, title, dates, one-line
 // description, an award where there is one, then the buttons pinned to the
-// bottom. Every picture has the same shape.
+// bottom. Every picture has the same shape. Pictures are lazy everywhere: one
+// in a panel that is not on show is not fetched until its panel shows.
 import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import ProjectActions from './ProjectActions.astro';
@@ -9,13 +10,11 @@ import { projectDates } from '../projects';
 
 interface Props {
   project: CollectionEntry<'projects'>;
-  /** True for the pictures above the fold. */
-  eager?: boolean;
   /** The title's heading level: h3 where the cards sit under a section heading. */
   level?: 'h2' | 'h3';
 }
 
-const { project, eager = false, level: Title = 'h2' } = Astro.props;
+const { project, level: Title = 'h2' } = Astro.props;
 const { data } = project;
 const media = data.media[0]!;
 ---
@@ -29,8 +28,7 @@ const media = data.media[0]!;
       fallbackFormat="webp"
       widths={[480, 800, 1200].filter((w) => w <= media.src.width)}
       sizes="(min-width: 76rem) 36rem, (min-width: 48em) 47vw, 100vw"
-      loading={eager ? 'eager' : 'lazy'}
-      fetchpriority={eager ? 'high' : undefined}
+      loading="lazy"
     />
   </div>
   <div class="card-body">

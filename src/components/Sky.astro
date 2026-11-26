@@ -1,0 +1,113 @@
+---
+// The sky at the top of a panel: the hero's text, then the art drawn behind it.
+// `kind` picks the hero and its art:
+//   home       the tallest hero (the name); the caller fills the default slot
+//   page       the shared page hero: a title and an optional subtitle
+//   away       the page hero with one dove flying away (not found)
+//   nthu-home  the NTHU section's Home: building, gate tower and trees
+//   nthu-page  the NTHU section's page hero: trees
+// The cloud, dove and tree shapes are symbols defined once per page in the layout.
+import PageHero from './PageHero.astro';
+import building from '../assets/nthu/building.svg?raw';
+import gateTower from '../assets/nthu/gate-tower.svg?raw';
+import treesHomeWide from '../assets/nthu/trees-home-wide.svg?raw';
+import treesHomeNarrow from '../assets/nthu/trees-home-narrow.svg?raw';
+import treesPage from '../assets/nthu/trees-page.svg?raw';
+
+interface Props {
+  kind?: 'home' | 'page' | 'away' | 'nthu-home' | 'nthu-page';
+  hero?: { title?: string; mark?: string; subtitle?: string; plain?: boolean };
+}
+
+const { kind = 'page', hero = {} } = Astro.props;
+const tall = kind === 'home' || kind === 'nthu-home';
+const nthu = kind.startsWith('nthu');
+
+// Stars for the night sky: plain dots of varied size, brightness and colour.
+// Real star colours: mostly white and blue-white, some pale yellow and orange,
+// a few faint red ones. A seeded generator places them, so every build draws
+// the same sky.
+const starColours = [
+  ...Array(5).fill('#ffffff'),
+  ...Array(4).fill('#cad7ff'),
+  ...Array(3).fill('#9bb0ff'),
+  ...Array(2).fill('#fff4ea'),
+  '#ffd2a1',
+  '#ffcc6f',
+  '#ffb08a',
+];
+function stars(seed: number, count: number) {
+  let s = seed;
+  const rnd = () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
+  return Array.from({ length: count }, () => {
+    const cx = `${(rnd() * 100).toFixed(1)}%`;
+    const cy = `${(rnd() * 100).toFixed(1)}%`;
+    const r = (0.6 + rnd() ** 2 * 1.4).toFixed(1);
+    const bright = 0.4 + rnd() * 0.6;
+    const fill = starColours[Math.floor(rnd() * starColours.length)]!;
+    // The red ones are the faint ones.
+    return { cx, cy, r, fill, opacity: (fill === '#ffb08a' ? bright * 0.6 : bright).toFixed(2) };
+  });
+}
+---
+
+<div class:list={['sky', { 'sky--hero': tall, 'sky--away': kind === 'away', [`sky--${kind}`]: nthu }]}>
+  <!-- The text comes before the art in the markup, so a browser that paints while it is still
+       reading the page already has the hero at its full height. -->
+  <div class="wrap">
+    {tall ? <slot /> : <PageHero {...hero} />}
+  </div>
+  <!-- Sky art, drawn for this site: clouds and doves by day, stars and a shooting star by night.
+       Decorative, and kept clear of the text (global.css). -->
+  <div class="sky-art" aria-hidden="true">
+    <div class="art-fade">
+      {
+        !nthu && (
+          <div class="day">
+            <svg class="cloud c-l1" viewBox="0 0 240 90"><use href="#cloud-a" /></svg>
+            <svg class="cloud c-l2" viewBox="0 0 200 80"><use href="#cloud-b" /></svg>
+            <svg class="cloud c-r1" viewBox="0 0 200 80"><use href="#cloud-b" /></svg>
+            <svg class="cloud c-r2" viewBox="0 0 240 90"><use href="#cloud-a" /></svg>
+            <svg class="dove d1" viewBox="0 0 64 48"><use href="#dove-a" /></svg>
+            <svg class="dove d2" viewBox="0 0 64 48"><use href="#dove-b" /></svg>
+            <svg class="dove d3" viewBox="0 0 64 48"><use href="#dove-b" /></svg>
+            <svg class="dove d4" viewBox="0 0 64 48"><use href="#dove-a" /></svg>
+            <svg class="dove d5" viewBox="0 0 64 48"><use href="#dove-a" /></svg>
+          </div>
+        )
+      }
+      <svg class="night stars">
+        {stars(7, 26).map((star) => <circle {...star} />)}
+        <g class="wide">{stars(23, 22).map((star) => <circle {...star} />)}</g>
+      </svg>
+      <svg class="night shooting" viewBox="0 0 120 3" preserveAspectRatio="none">
+        <path d="M0 1.5L120 0v3z"></path>
+      </svg>
+    </div>
+    <svg class="night stars stars-top">
+      {stars(41, 9).map((star) => <circle {...star} />)}
+      <g class="wide">{stars(59, 9).map((star) => <circle {...star} />)}</g>
+    </svg>
+    <svg class="night stars stars-side stars-l">{stars(77, 8).map((star) => <circle {...star} />)}</svg>
+    <svg class="night stars stars-side stars-r">{stars(91, 8).map((star) => <circle {...star} />)}</svg>
+    {
+      kind === 'nthu-home' && (
+        <>
+          <svg class="nthu-day n-cloud" viewBox="0 0 240 90"><use href="#cloud-a" /></svg>
+          <svg class="nthu-day n-dove-r" viewBox="0 0 64 48"><use href="#dove-a" /></svg>
+          <svg class="nthu-day n-dove-l" viewBox="0 0 64 48"><use href="#dove-b" /></svg>
+          <Fragment set:html={building + gateTower + treesHomeWide + treesHomeNarrow} />
+        </>
+      )
+    }
+    {
+      kind === 'nthu-page' && (
+        <>
+          <svg class="nthu-day n-cloud" viewBox="0 0 200 80"><use href="#cloud-b" /></svg>
+          <svg class="nthu-day n-dove-r" viewBox="0 0 64 48"><use href="#dove-a" /></svg>
+          <Fragment set:html={treesPage} />
+        </>
+      )
+    }
+  </div>
+</div>

@@ -1,25 +1,6 @@
 ---
-import Base from '../../layouts/Base.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
-import { getProjects } from '../../projects';
-
-const projects = await getProjects();
+import Forward from '../../components/Forward.astro';
+import { tabPath } from '../../site.config';
 ---
 
-<Base
-  title="Projects"
-  description="Projects by Vincent Jefferson: a campus food pre-order app, a Flutter trip planner, an FPGA game in Verilog, and games and tools in C, C++ and Python."
-  hero={{ title: 'Projects', subtitle: 'The Collection of My Projects' }}
->
-  <div class="page wrap">
-    <ul class="cards">
-      {
-        projects.map((project, i) => (
-          <li>
-            <ProjectCard project={project} eager={i < 2} />
-          </li>
-        ))
-      }
-    </ul>
-  </div>
-</Base>
+<Forward title="Projects" to={tabPath('projects')} />

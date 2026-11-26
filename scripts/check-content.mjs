@@ -2,7 +2,7 @@
 // placeholders, and project entries without a repo link or media. Scans src/.
 // Run: node scripts/check-content.mjs
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
-import { join, dirname, extname, relative } from 'node:path';
+import { join, dirname, extname, relative, sep } from 'node:path';
 
 const ROOT = 'src';
 const TEXT = new Set(['.astro', '.md', '.mdx', '.ts', '.js', '.mjs', '.json', '.css', '.html', '.txt', '.yml', '.yaml']);
@@ -27,11 +27,17 @@ function walk(dir) {
   );
 }
 
+// Sentences kept exactly as their author wrote them: [file, the whole line].
+const KEPT = [['src/components/NthuPage.astro', '<p>Click here to find out more about the author.</p>']];
+const kept = (file, line) =>
+  KEPT.some(([path, text]) => relative('.', file).split(sep).join('/') === path && line.trim() === text);
+
 const errors = [];
 const files = walk(ROOT).filter((f) => TEXT.has(extname(f)));
 
 for (const file of files) {
   readFileSync(file, 'utf8').split('\n').forEach((line, i) => {
+    if (kept(file, line)) return;
     for (const [name, re] of CHECKS) {
       if (re.test(line)) errors.push(`${relative('.', file)}:${i + 1}  ${name}\n    ${line.trim().slice(0, 120)}`);
     }

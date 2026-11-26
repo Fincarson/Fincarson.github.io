@@ -1,0 +1,14 @@
+---
+import Forward from '../../../components/Forward.astro';
+import { getProjects } from '../../../projects';
+import { projectPath } from '../../../site.config';
+
+export async function getStaticPaths() {
+  return (await getProjects()).map((project) => ({
+    params: { slug: project.data.slug },
+    props: { title: project.data.title },
+  }));
+}
+---
+
+<Forward title={Astro.props.title} to={projectPath(Astro.params.slug)} />

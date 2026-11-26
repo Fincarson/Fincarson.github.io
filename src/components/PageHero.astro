@@ -1,9 +1,8 @@
 ---
-// The hero of every page except the Overview: a title and an optional subtitle
-// in a box of one fixed height, so the hero is identical from page to page.
-// The layout renders it; a page only passes `hero` to Base.
+// The hero of every panel except Home: a title and an optional subtitle
+// in a box of one fixed height, so the hero is identical from tab to tab.
 // The title is always one line: --chars lets the stylesheet shrink a long one
-// to the width of the screen. A project page passes no title: its hero is the
+// to the width of the screen. A project passes no title: its hero is the
 // same box, empty, and the title sits under the picture.
 interface Props {
   title?: string;
@@ -20,7 +19,11 @@ const { title, mark = '', subtitle, plain = false } = Astro.props;
 <div class="page-hero">
   {
     title && (
-      <h1 class:list={['page-title', { 'page-title--plain': plain }]} style={`--chars: ${title.length + (mark ? mark.length + 1 : 0)}`}>
+      <h1
+        class:list={['page-title', { 'page-title--plain': plain }]}
+        style={`--chars: ${title.length + (mark ? mark.length + 1 : 0)}`}
+        tabindex="-1"
+      >
         {title}
         {mark && (
           <span class="title-mark" aria-hidden="true">

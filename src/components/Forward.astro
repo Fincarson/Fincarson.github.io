@@ -1,0 +1,28 @@
+---
+// An address from before the tabs: it forwards to the tab that replaced it.
+interface Props {
+  title: string;
+  /** The new address, from the root: "/?tab=about". */
+  to: string;
+}
+
+const { title, to } = Astro.props;
+const address = new URL(to, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="canonical" href={address} />
+    <script is:inline define:vars={{ to }}>
+      location.replace(to);
+    </script>
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+  </head>
+  <body>
+    <p>This page has moved to <a href={to}>{address}</a>.</p>
+  </body>
+</html>

@@ -1,6 +1,7 @@
 /* Design tokens. scripts/check-contrast.mjs reads the colours
    from this file: keep every colour a six-digit hex, light tokens in the
-   first block and the dark overrides in the [data-theme='dark'] block. */
+   first block, the dark overrides in the [data-theme='dark'] block and the
+   NTHU section's two palettes in the [data-site='nthu'] blocks. */
 
 :root {
   color-scheme: light;
@@ -172,6 +173,62 @@
     #0f171f 0%, #0f1720 8.33%, #0e1821 16.67%, #0d1924 25%, #0b1a28 33.33%, #091c2c 41.67%, #081d30 50%, #061e34 58.33%,
     #042038 66.67%, #02213c 75%, #01223e 83.33%, #002340 91.67%, #002341 100%;
   --shadow-menu: 0 8px 16px rgb(0 0 0 / 0.5);
+}
+
+/* The NTHU section: the same site in purple. Only colours change. The dark
+   block repeats what the light one sets, so neither order nor theme leaks. */
+:root[data-site='nthu'] {
+  --surface: #f4f2f9;
+  --border: #ddd8e6;
+  --brand: #7b44bf;
+  --link: #6a35a8;
+  --link-hover: #5e2d9b;
+  --focus: #6a35a8;
+  --selection-ink: #ffffff;
+  --button: #6a35a8;
+  --button-hover: #5e2d9b;
+  --sky-zenith: #7b44bf;
+  --sky-mid: #6c3aa9;
+  --sky-1: #8250c3;
+  --sky-2: #8759c7;
+  --sky-3: #9772d0;
+  --sky-4: #a88bda;
+  --sky-5: #baa4e3;
+  --sky-6: #c8b7e9;
+  --sky-7: #d7cbef;
+  --sky-8: #e5def5;
+  --sky-9: #f1edfa;
+  --sky-10: #faf9fd;
+  --sky-11: #fcfcfe;
+  --footer-bg: #2b1147;
+  --footer-stops:
+    #fdfdfe 0%, #e9e7ee 8.33%, #d6d2de 16.67%, #c3bdce 25%, #b0a8bf 33.33%, #9e94af 41.67%, #8c80a0 50%, #7a6d91 58.33%,
+    #695a82 66.67%, #594873 75%, #493664 83.33%, #3a2456 91.67%, #2b1147 100%;
+}
+
+:root[data-site='nthu'][data-theme='dark'] {
+  --bg: #130f1b;
+  --surface: #1d1726;
+  --border: #342a40;
+  --link: #b48cff;
+  --link-hover: #cbb0ff;
+  --focus: #b48cff;
+  --sky-zenith: #2b1147;
+  --sky-mid: #3a1a5e;
+  --sky-1: #291143;
+  --sky-2: #27113f;
+  --sky-3: #24113a;
+  --sky-4: #201133;
+  --sky-5: #1c112c;
+  --sky-6: #1a1128;
+  --sky-7: #181024;
+  --sky-8: #161021;
+  --sky-9: #150f1e;
+  --sky-10: #130f1b;
+  --sky-11: #130f1b;
+  --footer-stops:
+    #130f1b 0%, #15101e 8.33%, #171022 16.67%, #191026 25%, #1b1129 33.33%, #1d112d 41.67%, #1f1130 50%, #211134 58.33%,
+    #231138 66.67%, #25113c 75%, #27113f 83.33%, #291143 91.67%, #2b1147 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {

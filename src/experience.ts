@@ -1,13 +1,12 @@
-// Everything on the Experience page, newest first inside each group.
+// Everything on the Experience tab, newest first inside each group.
 // Adding an entry is one object here. A photo is optional (at most one);
 // a certificate is linked as a picture, never shown on the page.
 import type { ImageMetadata } from 'astro';
+import { projectPath } from './site.config';
 import scholarshipPhoto from './assets/experience/scholarship-group-photo.webp';
-import graduationPhoto from './assets/experience/high-school-graduation.webp';
 import forumPhoto from './assets/experience/youth-speak-forum.webp';
 import hackathonCertificate from './assets/experience/certificates/hackathon-first-place.webp';
 import scholarshipCertificate from './assets/experience/certificates/scholarship.webp';
-import taCertificate from './assets/experience/certificates/ta-training-camp.webp';
 import forumCertificate from './assets/experience/certificates/youth-speak-forum.webp';
 
 export interface Entry {
@@ -23,6 +22,8 @@ export interface Entry {
   links?: { label: string; href: string }[];
   certificate?: ImageMetadata;
   photo?: { src: ImageMetadata; alt: string };
+  /** One button under the entry, to a page of this site. */
+  button?: { label: string; href: string };
 }
 
 export interface Group {
@@ -89,7 +90,7 @@ export const groups: Group[] = [
         points: [
           'Part of the Global Vibe Coding Youth Tour, hosted at NTHU with NTHU EECS-GSA, NTHU IBPSA and the NTHU IBBA Student Association',
         ],
-        links: [{ label: 'NTHU FlashEat project page', href: '/projects/nthu-flasheat/' }],
+        links: [{ label: 'NTHU FlashEat project page', href: projectPath('nthu-flasheat') }],
         certificate: hackathonCertificate,
       },
       {
@@ -98,7 +99,7 @@ export const groups: Group[] = [
         org: 'Indie game hackathon at NTHU',
         dates: '2024',
         lead: 'For Panda Tales, a 2.5D action game I wrote in C with Allegro 5.',
-        links: [{ label: 'Panda Tales project page', href: '/projects/panda-tales/' }],
+        links: [{ label: 'Panda Tales project page', href: projectPath('panda-tales') }],
       },
       {
         id: 'taiwan-outstanding-scholarship',
@@ -131,70 +132,9 @@ export const groups: Group[] = [
     ],
   },
   {
-    id: 'education',
-    title: 'Education',
+    id: 'organizations',
+    title: 'Organizations and events',
     entries: [
-      {
-        id: 'nthu',
-        title: 'National Tsing Hua University (NTHU)',
-        org: "Bachelor's degree, Computer Science",
-        dates: 'Sep 2024 to Jun 2028',
-        points: [
-          'GPA 4.1/4.3',
-          'Upcoming undergraduate research with Prof. Chiu Te-Chuan on applying large language models to security and resilience tasks',
-          'Relevant coursework: Computer Networks, Data Structures, Software Studio, Hardware Design and Lab, Computer Architecture, Logic Design, Probability, Linear Algebra, Discrete Mathematics, Introduction to Programming I and II, Programming in Python',
-        ],
-      },
-      {
-        id: 'high-school',
-        title: 'SMAK 2 BPK PENABUR Bandung',
-        org: 'High school diploma',
-        dates: 'Jul 2021 to Jun 2024',
-        points: [
-          'Final grade 91.19/100',
-          '2LCB: a leadership, public speaking and communication program; organized events and served as MC with outside organizations',
-          'Project Next: built an HTML/CSS website and presented it to Maranatha officials',
-          "OSN Informatics: Indonesia's National Science Olympiad, in C++",
-        ],
-        photo: {
-          src: graduationPhoto,
-          alt: 'Vincent Jefferson in a navy suit with a graduation medal, holding his diploma folder and shaking hands on stage at the SMAK 2 BPK PENABUR graduation in Bandung, 15 June 2024.',
-        },
-      },
-    ],
-  },
-  {
-    id: 'certifications',
-    title: 'Certifications',
-    entries: [
-      {
-        id: 'citi',
-        title: 'CITI Program: Human Research, Data or Specimens Only Research (Basic Course)',
-        dates: 'Oct 2026, valid until Oct 2029',
-        lead: 'The basic course in human research ethics, under requirements set by MIT Affiliates.',
-        links: [
-          {
-            label: 'Verify on CITI',
-            href: 'https://www.citiprogram.org/verify/?w53c5f1e3-cab3-43f4-93a6-fa3216859bce-80555556',
-          },
-        ],
-      },
-      {
-        id: 'ta-training-camp',
-        title: 'Teaching Assistant Training Camp',
-        org: 'NTHU Center for Teaching and Learning Development',
-        dates: 'Aug 2026',
-        lead: 'Two days, 25 to 26 August 2026, 9.5 hours. Topics:',
-        points: [
-          'TA ethics in the AI era',
-          'Experience from outstanding TAs and tutors',
-          'Presentation structure and logical expression',
-          'Gender equality in teaching',
-          'Communication, guidance and facilitation as a TA',
-          'English-medium instruction (EMI): TA roles, strategies and challenges',
-        ],
-        certificate: taCertificate,
-      },
       {
         id: 'youth-speak-forum',
         title: 'National Youth Speak Forum 2026, delegate',
@@ -211,12 +151,6 @@ export const groups: Group[] = [
           alt: 'Delegates in formal wear working on laptops at long tables in a hotel conference room.',
         },
       },
-    ],
-  },
-  {
-    id: 'organizations',
-    title: 'Organizations',
-    entries: [
       {
         id: 'oc-hisa',
         title: 'OC-HISA (Overseas Chinese Hsinchu Indonesian Student Association)',
@@ -231,10 +165,10 @@ export const groups: Group[] = [
 /** The line under an entry's title. */
 export const meta = (entry: Entry) => [entry.org, entry.place, entry.dates].filter(Boolean).join(', ');
 
-/** The Overview's summary: the roles held now, two awards and the schools.
+/** Home's summary: the roles held now, two awards and the schools.
  *  Each line is a name in bold and the rest after it; a role has one short
  *  line under it. The full entries are above. */
-export const overview = {
+export const home = {
   roles: [
     {
       name: 'Teaching Assistant',
