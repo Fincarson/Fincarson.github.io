@@ -38,6 +38,9 @@
   --instagram-1: #833ab4;
   --instagram-2: #c13584;
   --instagram-3: #d62976;
+  /* The Archive's Download button: the one green. */
+  --download: #1a7f37;
+  --download-hover: #116329;
 
   /* The sky at the top of every page. White text sits only on the zenith
      (3.39:1), so it is always large text. --sky-mid is the hover ground of

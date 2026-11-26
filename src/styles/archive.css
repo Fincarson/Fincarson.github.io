@@ -1,0 +1,477 @@
+/* A part of the page that is switched off stays off, whatever its layout. */
+.archive [hidden] {
+  display: none;
+}
+
+/* The Archive: a search page. An intro, the search box, then the filters in a
+   column at the left and the results at the right. Below 52em the filters
+   open as a full-screen panel and the rows stack. */
+.archive {
+  margin-top: var(--space-48);
+}
+.archive-intro {
+  color: var(--ink-muted);
+  margin-bottom: var(--space-24);
+}
+.search label {
+  display: block;
+  margin-bottom: var(--space-8);
+  font-weight: 700;
+}
+.search input {
+  width: 100%;
+  height: 3.25rem;
+  padding: 0 var(--space-16);
+  border: 2px solid var(--ink-faint);
+  border-radius: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-base);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.search input::placeholder {
+  color: var(--ink-muted);
+  opacity: 1;
+}
+.archive-grid {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: var(--space-48);
+  /* Room kept for the list while it loads, so nothing below moves when it arrives. */
+  min-height: 32rem;
+  margin-top: var(--space-32);
+}
+.archive ul,
+.archive p {
+  max-width: none;
+}
+
+/* Filters: one fieldset per filter, a checkbox and a count per value. */
+.facet {
+  min-width: 0;
+  margin: 0 0 var(--space-24);
+  padding: 0;
+  border: 0;
+}
+.facet legend {
+  margin-bottom: var(--space-8);
+  padding: 0;
+  color: var(--ink-muted);
+  font-size: var(--text-s);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.facet ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.facet label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 2.25rem;
+  cursor: pointer;
+}
+.facet input {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0;
+  accent-color: var(--link);
+}
+.facet .count {
+  margin-left: auto;
+  padding-left: var(--space-8);
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+.facet-all,
+.chip-clear {
+  min-height: 2.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--link);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.facet-all:hover,
+.chip-clear:hover {
+  color: var(--link-hover);
+}
+.filters-button,
+.filters-panel {
+  display: none;
+}
+
+/* Above the results: the count, the sort menu, the chosen filters, the pages. */
+.results-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8) var(--space-16);
+}
+.results-count {
+  margin: 0;
+}
+.results-count:focus {
+  outline: none;
+}
+.sort {
+  color: var(--ink-muted);
+}
+.sort select {
+  min-height: 2.25rem;
+  margin-left: var(--space-8);
+  padding: var(--space-4) var(--space-8);
+  border: 1px solid var(--ink-faint);
+  border-radius: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+  margin: var(--space-16) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.chip {
+  min-height: 2.25rem;
+  padding: var(--space-4) var(--space-12);
+  border: 0;
+  background: var(--link);
+  color: var(--bg);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease);
+}
+.chip:hover {
+  background: var(--link-hover);
+}
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-top: var(--space-32);
+}
+.pager-top {
+  margin-top: var(--space-24);
+}
+.pg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-width: var(--tap);
+  min-height: var(--tap);
+  padding: 0 var(--space-12);
+  border: 2px solid var(--link);
+  color: var(--link);
+  font-weight: 700;
+  text-decoration: none;
+}
+.pg:hover,
+.pg.current {
+  background: var(--link);
+  color: var(--bg);
+}
+/* Where page numbers are skipped: a wider gap, no dots. */
+.pg-gap {
+  width: var(--space-16);
+}
+
+/* Results: a group per course and professor, a row per file. */
+.group {
+  margin-top: var(--space-48);
+}
+#list > .group:first-child {
+  margin-top: var(--space-32);
+}
+.group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+.group-title {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+/* Chinese has no display face: the body face, a little smaller, sits level with it. */
+.group-title .zh {
+  font-family: var(--font-body);
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.group-more {
+  color: var(--ink-muted);
+  font: 400 var(--text-base) / 1 var(--font-body);
+  letter-spacing: 0;
+}
+.group-count {
+  margin: 0;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.group-sub {
+  margin: var(--space-4) 0 0;
+  color: var(--ink-muted);
+}
+.group-sub span {
+  display: block;
+}
+.group-sub > span > span {
+  display: inline;
+}
+.files {
+  margin: var(--space-12) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+  list-style: none;
+}
+.file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding: var(--space-12) 0;
+  border-bottom: 1px solid var(--border);
+}
+.file p {
+  margin: 0;
+}
+.file-title {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.file-meta {
+  color: var(--ink-muted);
+  font-size: var(--text-s);
+}
+.tag {
+  display: inline-block;
+  margin-left: var(--space-8);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--link);
+  color: var(--link);
+  font-size: var(--text-s);
+  font-weight: 700;
+  vertical-align: 1px;
+}
+.file-actions {
+  display: flex;
+  flex: none;
+  gap: var(--space-8);
+  white-space: nowrap;
+}
+/* View: an outline in the link colour. Download: solid green, the one green on the site. */
+.act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  min-height: var(--tap);
+  padding: var(--space-4) var(--space-16);
+  border: 2px solid var(--link);
+  color: var(--link);
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background-color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease);
+}
+.act svg {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+.act-view:hover {
+  background: var(--link);
+  color: var(--bg);
+}
+.act-download,
+.act-download:hover {
+  border-color: var(--download);
+  background: var(--download);
+  color: var(--brand-ink);
+}
+.act-download:hover {
+  border-color: var(--download-hover);
+  background: var(--download-hover);
+}
+.archive mark {
+  padding: 0 0.1em;
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+  color: inherit;
+}
+
+/* The start screen: three cards, one per type. */
+.searching #start {
+  display: none;
+}
+.type-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-24);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  height: 100%;
+  padding: var(--space-24) var(--space-16);
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color var(--duration) var(--ease);
+}
+.type-card:hover {
+  border-color: var(--link);
+  color: var(--ink);
+}
+.type-card svg {
+  width: 100%;
+  max-width: 12rem;
+  height: auto;
+}
+.type-title {
+  margin-top: var(--space-8);
+  font: 700 var(--text-2xl) / 1.1 var(--font-display);
+  letter-spacing: var(--tracking-display);
+}
+.type-sub {
+  color: var(--ink-muted);
+}
+.start-line {
+  margin: var(--space-32) 0 0;
+  color: var(--ink-muted);
+  font: 700 var(--text-xl) / 1.2 var(--font-display);
+  letter-spacing: var(--tracking-display);
+  text-align: center;
+}
+
+/* In place of results: loading, nothing found, or the list did not arrive. */
+.archive-loading {
+  color: var(--ink-muted);
+}
+.archive-empty {
+  margin-top: var(--space-24);
+}
+.archive-empty-title {
+  font-size: var(--text-l);
+  font-weight: 700;
+}
+.archive-empty a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+}
+.archive-error {
+  padding: var(--space-24);
+  border: 2px solid var(--ink);
+  background: var(--surface);
+}
+.archive-error .btn {
+  margin-top: var(--space-8);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 51.99em) {
+  .archive-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: var(--space-16);
+  }
+  .filters {
+    display: none;
+  }
+  .filters-button {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    margin-top: var(--space-16);
+    padding: var(--space-8) var(--space-16);
+    border: 2px solid var(--link);
+    background: var(--bg);
+    color: var(--link);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .filters-button:disabled {
+    border-color: var(--ink-faint);
+    color: var(--ink-muted);
+    cursor: default;
+  }
+  .filters-panel[open] {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-16) var(--gutter) 0;
+    border: 0;
+    background: var(--bg);
+    color: var(--ink);
+    overflow-y: auto;
+  }
+  .filters-panel h2 {
+    font-size: var(--text-2xl);
+  }
+  .filters-panel #filters-slot {
+    flex: 1;
+  }
+  /* "Show N results" stays in reach at the bottom of the panel. */
+  .filters-panel .btn {
+    position: sticky;
+    bottom: 0;
+    margin: var(--space-16) calc(var(--gutter) * -1) 0;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .type-cards {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-16);
+  }
+  .type-card svg {
+    max-width: 9rem;
+  }
+  .file {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-12);
+  }
+  .file-actions .act {
+    flex: 1;
+  }
+  .group-head {
+    flex-wrap: wrap;
+    gap: 0 var(--space-16);
+  }
+}

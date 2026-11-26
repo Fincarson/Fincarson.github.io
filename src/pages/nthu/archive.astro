@@ -1,0 +1,102 @@
+---
+// The Archive: a page of its own in the NTHU section, reached only by its
+// address. It searches a list of files (public/data/archive/files.json, built
+// by scripts/build-archive-index.mjs) and a list of textbooks, in the browser.
+// Nothing links here and search engines are told to stay away.
+import { readFileSync } from 'node:fs';
+import Base from '../../layouts/Base.astro';
+import Tab from '../../components/Tab.astro';
+import '../../styles/archive.css';
+import exams from '../../assets/nthu/archive-exams.svg?raw';
+import homework from '../../assets/nthu/archive-homework.svg?raw';
+import slides from '../../assets/nthu/archive-slides.svg?raw';
+
+const path = '/nthu/archive';
+const description = 'Search the archive.';
+
+// The date and the three counts come from the list itself, so they are right the moment the page shows.
+const list = JSON.parse(readFileSync('public/data/archive/files.json', 'utf8'));
+const count = (type: string) =>
+  list.files.filter((f: number[]) => list.types[f[1]!] === type).length.toLocaleString('en-US');
+const cards = [
+  { type: 'Exams', picture: exams },
+  { type: 'Homework', picture: homework },
+  { type: 'Slides', picture: slides },
+];
+---
+
+<Base variant="nthu" panels={[{ id: 'archive', title: 'Archive' }]} description={description} page={{ path, robots: 'noindex, nofollow' }}>
+  <Tab id="archive" description={description} kind="nthu-page" hero={{ title: 'Archive' }}>
+    <div class="page page--nthu wrap archive" id="archive" data-list="/data/archive/files.json">
+      <p class="archive-intro">
+        This is our personal archive, collected since Fall 2024.<br />
+        Last updated: {list.updated}
+      </p>
+
+      <form class="search" role="search" id="search">
+        <label for="q">Search archive</label>
+        <input id="q" name="q" type="search" placeholder="e.g. Calculus Wu 2023" autocomplete="off" spellcheck="false" enterkeyhint="search" />
+      </form>
+      <noscript><p>The search needs JavaScript.</p></noscript>
+
+      <button class="filters-button" id="filters-open" type="button" aria-haspopup="dialog" disabled>Filters</button>
+
+      <div class="archive-grid">
+        <div class="filters" id="filters">
+          <form id="facets" aria-label="Filters"></form>
+        </div>
+
+        <div class="results">
+          <div class="results-bar" id="bar" hidden>
+            <p class="results-count" id="count" role="status" tabindex="-1"></p>
+            <label class="sort">
+              Sort
+              <select id="sort">
+                <option value="relevance">Relevance</option>
+                <option value="newest">Newest semester</option>
+                <option value="course">Course A to Z</option>
+              </select>
+            </label>
+          </div>
+          <ul class="chips" id="chips" hidden></ul>
+          <nav class="pager pager-top" id="pager-top" aria-label="Pages" hidden></nav>
+          <div id="list"></div>
+          <nav class="pager" id="pager-bottom" aria-label="Pages, below the results" hidden></nav>
+          <div class="archive-note" id="note" hidden></div>
+
+          <!-- An address that asks for something skips the start screen from the first paint. -->
+          <script is:inline>
+            if (location.search) document.getElementById('archive').classList.add('searching');
+          </script>
+          <div id="start">
+            <ul class="type-cards">
+              {
+                cards.map((card) => (
+                  <li>
+                    <a class="type-card" href={`${path}?type=${card.type.toLowerCase()}`}>
+                      <Fragment set:html={card.picture} />
+                      <span class="type-title">{card.type}</span>
+                      <span class="type-sub">{count(card.type)} files</span>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+            <p class="start-line">Find what you need</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phones: the filters open here, as a full-screen panel. -->
+      <dialog class="filters-panel" id="filters-panel" aria-labelledby="filters-title">
+        <h2 id="filters-title">Filters</h2>
+        <div id="filters-slot"></div>
+        <button class="btn" id="filters-close" type="button">Show results</button>
+      </dialog>
+    </div>
+  </Tab>
+</Base>
+
+<script>
+  import '../../scripts/archive';
+</script>

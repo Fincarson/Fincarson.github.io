@@ -1,6 +1,6 @@
 // Layout check: switching between the light and the dark theme may change
 // colours only. Serves dist/, opens every tab address in the sitemap (and an
-// address that names no tab, on each page, and the 404 page) at a phone and a
+// address that names no tab, on each page, the 404 page and the pages the sitemap leaves out) at a phone and a
 // desktop width, records the box of every element in light, presses the theme
 // toggle, records again, and fails if any box moved or changed size.
 // Left out: the sky art and the toggle's icon, which are different drawings in
@@ -41,6 +41,8 @@ const pages = [
   }),
   '/?tab=nothing',
   '/nthu?tab=nothing',
+  '/nthu/archive',
+  '/nthu/archive?q=calculus',
   '/404.html',
 ];
 
@@ -82,6 +84,8 @@ for (const width of WIDTHS) {
   const page = await context.newPage();
   for (const path of pages) {
     await page.goto(origin + path);
+    // A page that fills itself in from a list is measured once it has.
+    await page.waitForFunction(() => !document.querySelector('[data-status="loading"]'));
     await page.evaluate(() => document.fonts.ready);
     // Lazy pictures near the window load on their own time: let them finish,
     // so one arriving between the two measurements is not taken for a move.

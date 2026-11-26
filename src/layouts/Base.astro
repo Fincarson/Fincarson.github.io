@@ -13,9 +13,11 @@ interface Props {
   description?: string;
   /** The 404 page: it has no address of its own, so no canonical link, and it stays out of search. */
   notFound?: boolean;
+  /** A page of its own, not a tab: its address and, when it must stay out of search, its robots line. */
+  page?: { path: string; robots?: string };
 }
 
-const { variant = 'main', panels, description = site.description, notFound = false } = Astro.props;
+const { variant = 'main', panels, description = site.description, notFound = false, page } = Astro.props;
 const isNthu = variant === 'nthu';
 const base = isNthu ? nthu.base : '/';
 const pageTitle = panels[0]!.title;
@@ -31,11 +33,14 @@ const footer = isNthu
       { id: 'footer-pages', title: 'Pages', links: nav },
       { id: 'footer-socials', title: 'Socials', links: Object.values(profileLinks) },
     ];
-const canonical = new URL(base, Astro.site);
+const canonical = new URL(page?.path ?? base, Astro.site);
 const shareImage = new URL('/og.png', Astro.site);
 const titles = Object.fromEntries(panels.map((p) => [p.id, p.title]));
 // The 404 page sits at no address of its own: there the scripts show its one panel and switch nothing.
-const home = notFound ? null : base;
+// A page of its own has one panel too, and nothing to switch.
+const home = notFound || page ? null : base;
+const fixed = page ? panels[0]!.id : null;
+const robots = notFound ? 'noindex' : page?.robots;
 ---
 
 <!doctype html>
@@ -45,15 +50,18 @@ const home = notFound ? null : base;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    {notFound ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    {robots ? <meta name="robots" content={robots} /> : <link rel="canonical" href={canonical} />}
     <!-- Before the first paint: marks that scripts run, applies the saved theme (the choice never
          leaves the browser), reads the address and shows only the panel it names. -->
-    <script is:inline define:vars={{ titles, home, missing: NOT_FOUND }}>
+    <script is:inline define:vars={{ titles, home, fixed, missing: NOT_FOUND }}>
       const root = document.documentElement;
       root.classList.add('js');
       try {
         if (localStorage.getItem('theme') === 'dark') root.dataset.theme = 'dark';
       } catch {}
+      // A page of its own has one panel and nothing to read from the address.
+      const single = { show: () => fixed, here: () => false, home, missing };
+      const tabbed = () => {
       const head = document.head;
       const only = head.appendChild(document.createElement('style'));
       const canonical = head.querySelector('[rel=canonical]');
@@ -83,7 +91,9 @@ const home = notFound ? null : base;
         return id;
       };
       show();
-      window.tabs = { show, here, home, missing };
+      return { show, here, home, missing };
+      };
+      window.tabs = fixed === null ? tabbed() : single;
     </script>
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/icon-512.png" type="image/png" sizes="512x512" />
@@ -117,7 +127,7 @@ const home = notFound ? null : base;
             {
               nav.map((s, i) => (
                 <li>
-                  <a href={s.href} data-nav={s.tab} aria-current={i === 0 && !notFound ? 'page' : undefined}>
+                  <a href={s.href} data-nav={s.tab} aria-current={i === 0 && home ? 'page' : undefined}>
                     {s.label}
                   </a>
                 </li>
@@ -145,7 +155,7 @@ const home = notFound ? null : base;
                  keeps the address current). Where there is no such address, it links to Home. -->
             <ul class="lang-menu" id="lang-menu" hidden>
               <li>
-                <a href={base} lang="en" hreflang="en" aria-current="true">
+                <a href={page?.path ?? base} lang="en" hreflang="en" aria-current="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true" focusable="false">
                     <path d="M4 12.5l5 5L20 6.5"></path>
                   </svg>
@@ -185,7 +195,7 @@ const home = notFound ? null : base;
             {
               nav.map((s, i) => (
                 <li>
-                  <a href={s.href} data-nav={s.tab} aria-current={i === 0 && !notFound ? 'page' : undefined}>
+                  <a href={s.href} data-nav={s.tab} aria-current={i === 0 && home ? 'page' : undefined}>
                     {s.label}
                   </a>
                 </li>
