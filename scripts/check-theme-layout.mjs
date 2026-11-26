@@ -83,6 +83,9 @@ for (const width of WIDTHS) {
   for (const path of pages) {
     await page.goto(origin + path);
     await page.evaluate(() => document.fonts.ready);
+    // Lazy pictures near the window load on their own time: let them finish,
+    // so one arriving between the two measurements is not taken for a move.
+    await page.waitForLoadState('networkidle');
     const light = await page.evaluate(measure);
     await page.click('.theme-toggle');
     if ((await page.evaluate(() => document.documentElement.dataset.theme)) !== 'dark') {
